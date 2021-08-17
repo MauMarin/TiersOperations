@@ -11,8 +11,6 @@ import {
   Typography
 } from '@material-ui/core';
 import axios from 'axios';
-//import FacebookIcon from 'src/icons/Facebook';
-//import GoogleIcon from 'src/icons/Google';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -44,10 +42,12 @@ const Login = () => {
 
             //initial call to backend
             onSubmit={(username, password) => {
-              axios.post('localhost:3000/', {username, password})
-                .then(res => {
-                  console.log(res);
-                })
+              axios.post('http://localhost:8080/api/users/validate', {username, password})
+              .then((response) => {
+                console.log(response);
+              }, (error) => {
+                console.log(error);
+              });
               //navigate('/app/home', { replace: true });
             }}
 

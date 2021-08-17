@@ -21,7 +21,7 @@ const clickHandle = (product) =>{
     case "Cost":
       console.log("Cost case");
       //navigate('/app/entries-c', { replace: true });
-      //break;
+      break;
     case "OpEx":
       console.log("OpEx case");
       break;
