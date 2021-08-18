@@ -15,6 +15,14 @@ class SafetyController{
         return entry;
     }
 
+    async getAllSafetyEntries(depID_){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesBySafety] :depID',
+            {replacements: {
+                depID: depID_
+            }});
+        return entry;
+    }
+
     async insertSafetyEntry(reportDate_, createdBy_, tier_, HOs_, TRIR_, firstAid_, nearMiss_){
 
         const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -26,7 +34,7 @@ class SafetyController{
         const fiscalYear_ = fiscal.getYear(year, month);
         const fiscalMonth_ = fiscal.getMonth(month);
 
-        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :tier, HOs, TRIR, firstAid, nearMiss',
+        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :tier, :HOs, :TRIR, :firstAid, :nearMiss',
         {replacements:{
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 

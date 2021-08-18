@@ -15,6 +15,14 @@ class CostController{
         return entry;
     }
 
+    async getAllCostEntries(depID_){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByCost] :depID',
+            {replacements: {
+                depID: depID_
+            }});
+        return entry;
+    }
+
     async insertCostEntry(_reportDate, _createdBy, _tier, _scrap, _conversionLoss, _toolConsumption, _toolRate, _earnHours, _energyRate){
 
         const _createdDate = moment().format('YYYY-MM-DD HH:mm:ss');

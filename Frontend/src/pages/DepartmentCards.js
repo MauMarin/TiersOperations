@@ -8,7 +8,6 @@ import {
 //import DepartmentCardToolbar from '../components/department_cards/DepartmentCardToolbar';
 import DepartmentCard from '../components/department_cards/DepartmentCard';
 import products from '../__mocks__/departments';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 const DepartmentCards = () => (
   <>

@@ -72,6 +72,8 @@ AS
 
 	COMMIT
 GO
+
+
 IF OBJECT_ID('[dbo].[usp_DepartmentDelete]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_DepartmentDelete] 
@@ -88,6 +90,24 @@ AS
 	DELETE
 	FROM   [dbo].[Department]
 	WHERE  [id] = @id
+
+	COMMIT
+GO
+
+IF OBJECT_ID('[dbo].[usp_AllDepartments	]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_AllDepartments] 
+END 
+GO
+CREATE PROC [dbo].[usp_AllDepartments] 
+
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	SELECT * FROM Department
 
 	COMMIT
 GO

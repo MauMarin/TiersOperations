@@ -15,6 +15,14 @@ class ServiceController{
         return entry;
     }
 
+    async getAllServiceEntries(depID_){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByService] :depID',
+            {replacements: {
+                depID: depID_
+            }});
+        return entry;
+    }
+
     async insertServiceEntry(reportDate_, createdBy_, tier_, op20_, op40_, op60_, op65_, op70_, intervention_, OEE_){
 
         const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');

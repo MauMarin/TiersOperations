@@ -5,9 +5,9 @@ import DepartmentCards from './pages/DepartmentCards';
 
 import CostEntriesList from './pages/CostEntriesList';
 import OpexEntriesList from './pages/OpexEntriesList';
-// import QualityEntriesList from './pages/QualityEntriesList';
-// import SafetyEntriesList from './pages/SafetyEntriesList';
-// import ServiceEntriesList from './pages/ServiceEntriesList';
+import QualityEntriesList from './pages/QualityEntriesList';
+import SafetyEntriesList from './pages/SafetyEntriesList';
+import ServiceEntriesList from './pages/ServiceEntriesList';
 
 import Home from './pages/Home';
 import MainLayout from './components/MainLayout';
@@ -22,6 +22,9 @@ const routes = [
         { path: 'entries-a', element: <DepartmentCards /> },
         { path: 'entries-c', element: <CostEntriesList /> },
         { path: 'opex-entries', element: <OpexEntriesList /> },
+        { path: 'quality-entries', element: <QualityEntriesList /> },
+        { path: 'service-entries', element: <ServiceEntriesList /> },
+        { path: 'safety-entries', element: <SafetyEntriesList /> },
         // { path: 'customers', element: <CustomerList /> },
         { path: 'home', element: <Home /> },
         // { path: 'products', element: <ProductList /> },

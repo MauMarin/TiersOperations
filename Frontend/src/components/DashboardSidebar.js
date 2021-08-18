@@ -28,12 +28,12 @@ const user = {
 
 const items = [
     {
-        href: '/app/entries-c',
+        href: '/app/cards',
         icon: Square,
         title: 'Cards'
     },
     {
-        href: '/app/opex-entries',
+        href: '/app/dashboard',
         icon: BarChartIcon,
         title: 'Dashboard'
     },
@@ -43,17 +43,17 @@ const items = [
         title: 'Department Entries'
     },
     {
-        href: '/app/account',
+        href: '/app/goals',
         icon: Target,
         title: 'Goals'
     },
     {
-        href: '/app/settings',
+        href: '/app/roles',
         icon: Tool,
         title: 'Roles'
     },
     {
-        href: '/app/customers',
+        href: '/app/users',
         icon: UsersIcon,
         title: 'Users'
     },

@@ -71,9 +71,8 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/validate', (req, res) => {
-    const {username, password} = req.body;
+    const {username, password} = req.body.username;
     try{
-        //res.json({username, password})
         controller.validateUser(username, password)
         .then(response => {
             const entry = response;

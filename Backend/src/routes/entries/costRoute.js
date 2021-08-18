@@ -100,4 +100,17 @@ router.post('/delete', (req, res) => {
     }
 })
 
+router.post('/allEntries', (req, res) => {
+    const {depID} = req.body;
+    try{
+        controller.getAllCostEntries(depID)
+        .then(response => {
+            const entry = response;
+            res.json(entry[0]);
+        })
+    } catch(err){
+        return res.json({success: false, error: err});
+    }
+})
+
 module.exports = router;

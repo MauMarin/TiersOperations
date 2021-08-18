@@ -24,5 +24,6 @@
     "nodemon": "^2.0.12",
     "sequelize": "^6.6.5",
     "tedious": "^11.4.0"
-  }
+  },
+  "proxy": "http://localhost:3000"
 }

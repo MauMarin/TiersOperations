@@ -15,6 +15,14 @@ class OpexController{
         return entry;
     }
 
+    async getAllOpexEntries(depID_){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByOpex] :depID',
+            {replacements: {
+                depID: depID_
+            }});
+        return entry;
+    }
+
     async insertOpexEntry(reportDate_, createdBy_, tier_, evaluation6S_, trainingOnTime_, completedOnTime_){
 
         const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');

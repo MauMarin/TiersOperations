@@ -137,15 +137,12 @@ AS
 
 	BEGIN TRAN
 
-	select
-		case when exists
-		(
-			select u.* from Users u
-			where u.username = @username
-			AND u.password = @password
-		)
-		then 1
-		else -1
+	select u.* from Users u
+	where u.username = @username
+	AND u.password = @password
+
+
+
 	COMMIT
 GO
 ----------------------------------------------------------------------------------------

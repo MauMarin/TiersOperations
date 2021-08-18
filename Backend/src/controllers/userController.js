@@ -54,6 +54,7 @@ class UserController{
             username: username_,
             password: password_
         }});
+        console.log(entry)
         return entry;
     }
 }

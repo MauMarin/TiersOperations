@@ -1,13 +1,13 @@
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  TextField,
-  InputAdornment,
-  SvgIcon
+  // Card,
+  // CardContent,
+  // TextField,
+  // InputAdornment,
+  // SvgIcon
 } from '@material-ui/core';
-import { Search as SearchIcon } from 'react-feather';
+//import { Search as SearchIcon } from 'react-feather';
 
 const EntriesToolbar = (props) => (
   <Box {...props}>

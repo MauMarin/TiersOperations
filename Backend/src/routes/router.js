@@ -10,6 +10,7 @@ const goals = require('./goals');
 const users = require('./users');
 
 router.use('/entries', entries.routes);
+router.use('/department', entries.routes);
 //router.use('/cards', cards);
 //router.use('/dashboard', dashboard);
 //router.use('/goals', goals);

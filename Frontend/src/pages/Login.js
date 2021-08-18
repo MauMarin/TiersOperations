@@ -44,11 +44,13 @@ const Login = () => {
             onSubmit={(username, password) => {
               axios.post('http://localhost:8080/api/users/validate', {username, password})
               .then((response) => {
-                console.log(response);
+                const data = response.data;
+                if(data !== ""){
+                  navigate('/app/home', { replace: true });
+                }
               }, (error) => {
                 console.log(error);
               });
-              //navigate('/app/home', { replace: true });
             }}
 
           >

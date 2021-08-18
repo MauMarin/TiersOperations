@@ -95,6 +95,14 @@ class QualityController{
             idEntry: _idEntry
         }});
     };
+
+    async getAllQualityEntries(depID_){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByQuality] :depID',
+            {replacements: {
+                depID: depID_
+            }});
+        return entry;
+    }
 }
 
 module.exports = QualityController;

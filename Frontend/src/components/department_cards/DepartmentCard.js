@@ -1,7 +1,5 @@
 import PropTypes from 'prop-types';
 
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-
 import {
   Avatar,
   Box,
@@ -14,34 +12,42 @@ import {
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import Update from '@material-ui/icons/Update';
 
-//const navigate = useNavigate();
+import { useNavigate } from 'react-router-dom';
 
-const clickHandle = (product) =>{
+const clickHandle = (navigate, product) =>{
   switch(product.title){
     case "Cost":
       console.log("Cost case");
-      //navigate('/app/entries-c', { replace: true });
+      navigate('/app/entries-c', { replace: true });
       break;
     case "OpEx":
       console.log("OpEx case");
+      navigate('/app/opex-entries', { replace: true });
       break;
     case "Quality":
       console.log("Quality case");
+      navigate('/app/quality-entries', { replace: true });
       break;
     case "Safety":
       console.log("Safety case");
+      navigate('/app/safety-entries', { replace: true });
       break;
     case "Service":
       console.log("Service case");
+      navigate('/app/service-entries', { replace: true });
       break;
     default:
       console.log("hsdgvzcg");
   }
 }
 
-const DepartmentCard = ({ product, ...rest }) => (
+export default function DepartmentCard ({ product, ...rest }) {
+
+  const navigate = useNavigate();
+
+  return (
   <Card
-    onClick = {() => clickHandle(product)}
+    onClick = {() => clickHandle(navigate, product)}
     sx={{
       display: 'flex',
       flexDirection: 'column',
@@ -124,10 +130,9 @@ const DepartmentCard = ({ product, ...rest }) => (
       </Grid>
     </Box>
   </Card>
-);
+  )
+};
 
 DepartmentCard.propTypes = {
   product: PropTypes.object.isRequired
 };
-
-export default DepartmentCard;

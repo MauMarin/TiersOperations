@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 import EntriesToolbar from '../components/entries/EntryToolbar';
-import OpExResults from '../components/entries/OpExResults';
+import ServiceResults from '../components/entries/ServiceResults';
 //import customers from '../__mocks__/OpExPlaceholder';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
@@ -13,7 +13,7 @@ export default function OpExEntryList(){
 
   useEffect(() => {
     const depID = 1;
-    axios.post("http://localhost:8080/api/entries/opex/allEntries", {depID}).then(response => {
+    axios.post("http://localhost:8080/api/entries/service/allEntries", {depID}).then(response => {
       console.log(response.data)
       setEntries(response.data)
       setLoading(false);
@@ -39,7 +39,7 @@ export default function OpExEntryList(){
       <Container maxWidth={false}>
         <EntriesToolbar />
         <Box sx={{ pt: 3 }}>
-            <OpExResults customers={entries} />
+            <ServiceResults customers={entries} />
         </Box>
       </Container>
     </Box>
