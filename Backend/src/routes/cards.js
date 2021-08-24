@@ -56,4 +56,35 @@ router.post('/delete', (req, res) => {
     }
 })
 
+router.post('/changeStatus', (req, res) => {
+    const {idCard, status} = req.body;
+    try{
+        controller.changeStatus(idCard, status)
+        .then(() => {
+            return res.json({success: true, message: 'Card has succesfully been changed'});
+        })
+        .catch(err => {
+            return res.json({success: false, error: {message: err.message}})
+        })
+    }
+    catch (err){
+        return res.json({success: false, error: err});
+    }
+})
+
+router.post('/getByStatus', (req, res) => {
+    const {status} = req.body;
+    console.log(status)
+    try{
+        controller.getByStatus(status)
+        .then((response) => {
+            const cards = response;
+            res.json(cards[0])
+        })
+    }
+    catch (err){
+        return res.json({success: false, error: err});
+    }
+})
+
 module.exports = router;

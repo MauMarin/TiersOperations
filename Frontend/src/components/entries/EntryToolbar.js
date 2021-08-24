@@ -7,24 +7,35 @@ import {
   // InputAdornment,
   // SvgIcon
 } from '@material-ui/core';
+import Popup from 'reactjs-popup';
 //import { Search as SearchIcon } from 'react-feather';
 
-const EntriesToolbar = (props) => (
-  <Box {...props}>
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'flex-end'
-      }}
-    >
-      <Button
-        color="primary"
-        variant="contained"
-      >
-        Add new
-      </Button>
-    </Box>
-  </Box>
-);
+import { useState } from 'react';
 
-export default EntriesToolbar;
+export default function EntriesToolbar(props) {
+  const [open, setOpen] = useState(false);
+  const closeModal = () => setOpen(false);
+
+  return (
+    <Box {...props}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end'
+        }}
+      >
+
+        <Popup trigger={<Button
+          color="primary"
+          variant="contained"
+        >
+          Add new
+        </Button>} position="right center">
+          <div>Popup content here !!</div>
+        </Popup>
+
+
+      </Box>
+    </Box>
+  );
+}

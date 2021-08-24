@@ -7,6 +7,7 @@ import {
   InputAdornment,
   SvgIcon
 } from '@material-ui/core';
+import Popup from 'reactjs-popup';
 import { Search as SearchIcon } from 'react-feather';
 
 const DepartmentCardToolbar = (props) => (

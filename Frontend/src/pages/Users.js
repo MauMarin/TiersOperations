@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
 import EntriesToolbar from '../components/entries/EntryToolbar';
-import SafetyResults from '../components/entries/SafetyResults';
+import UserResults from '../components/users/UserResults';
 //import customers from '../__mocks__/OpExPlaceholder';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
@@ -11,14 +11,14 @@ export default function OpExEntryList(){
   const [isLoading, setLoading] = useState(true);
   const [entries, setEntries] = useState();
 
-  // useEffect(() => {
-  //   const depID = 1;
-  //   axios.post("http://localhost:8080/api/entries/safety/allEntries", {depID}).then(response => {
-  //     console.log(response.data)
-  //     setEntries(response.data)
-  //     setLoading(false);
-  //   });
-  // }, []);
+  useEffect(() => {
+    const depID = 1;
+    axios.post("http://localhost:8080/api/users/getAll", {depID}).then(response => {
+      console.log(response.data)
+      setEntries(response.data)
+      setLoading(false);
+    });
+  }, []);
 
   if (isLoading) {
     return <div className="App">Loading...</div>;
@@ -27,7 +27,7 @@ export default function OpExEntryList(){
   return (
   <>
     <Helmet>
-      <title>Entries</title>
+      <title>Users</title>
     </Helmet>
     <Box
       sx={{
@@ -39,7 +39,7 @@ export default function OpExEntryList(){
       <Container maxWidth={false}>
         <EntriesToolbar />
         <Box sx={{ pt: 3 }}>
-            <SafetyResults customers={entries} />
+            <UserResults customers={entries} />
         </Box>
       </Container>
     </Box>

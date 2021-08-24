@@ -84,4 +84,18 @@ router.post('/validate', (req, res) => {
     }
 })
 
+router.post('/getAll', (req, res) => {
+    try{
+        controller.getAllUsers()
+        .then(response => {
+            const entry  = response;
+            console.log(entry)
+            res.json(entry[0]);
+        })
+    }
+    catch (err){
+        return res.json({success: false, error: err});
+    }
+})
+
 module.exports = router;

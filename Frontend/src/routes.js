@@ -9,6 +9,10 @@ import QualityEntriesList from './pages/QualityEntriesList';
 import SafetyEntriesList from './pages/SafetyEntriesList';
 import ServiceEntriesList from './pages/ServiceEntriesList';
 
+import Users from './pages/Users'
+
+import Cards from './pages/Cards'
+
 import Home from './pages/Home';
 import MainLayout from './components/MainLayout';
 import NotFound from './pages/NotFound';
@@ -25,6 +29,8 @@ const routes = [
         { path: 'quality-entries', element: <QualityEntriesList /> },
         { path: 'service-entries', element: <ServiceEntriesList /> },
         { path: 'safety-entries', element: <SafetyEntriesList /> },
+        { path: 'users', element: <Users /> },
+        { path: 'cards', element: <Cards /> },
         // { path: 'customers', element: <CustomerList /> },
         { path: 'home', element: <Home /> },
         // { path: 'products', element: <ProductList /> },

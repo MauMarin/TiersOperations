@@ -58,6 +58,22 @@ class CardController{
         }});
     };
 
+    async changeStatus(idCard_, status_){
+        await connection.sequelize.query('EXEC [dbo].[usp_ChangeStatus] :idCard, :status',
+        {replacements: {
+            idCard: idCard_,
+            status: status_
+        }});
+    }
+
+    async getByStatus(status_){
+        const cards = await connection.sequelize.query('EXEC [dbo].[usp_GetByStatus] :status',
+        {replacements: {
+            status: status_
+        }});
+        return cards;
+    }
+
 }
 
 module.exports = CardController;

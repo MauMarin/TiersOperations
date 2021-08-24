@@ -57,6 +57,11 @@ class UserController{
         console.log(entry)
         return entry;
     }
+
+    async getAllUsers(){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_GetAllUsers]');
+        return entry;
+    }
 }
 
 module.exports = UserController;
