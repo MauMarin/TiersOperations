@@ -1,9 +1,22 @@
-'use strict';
+
 
 const express = require('express');
-//var UserController = require('../controllers/userController')
+var DepartmentController = require('../controllers/departmentController')
 const router = express.Router();
 
-var controller = new UserController();
+var controller = new DepartmentController();
+
+router.get('/allDepartments', (req, res) => {
+    try{
+        controller.getAll()
+        .then(response => {
+            const entry = response;
+            res.json(entry[0]);
+        })
+    }
+    catch(err){
+        return res.json({success: false, error: err});
+    }
+})
 
 module.exports = router;

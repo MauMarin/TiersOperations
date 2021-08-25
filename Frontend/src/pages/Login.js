@@ -76,7 +76,7 @@ const Login = () => {
                     gutterBottom
                     variant="body2"
                   >
-                    Sign in on the internal platform with you internal credentials
+                    Sign in on the internal platform with your internal credentials
                   </Typography>
                 </Box>
                 <Box

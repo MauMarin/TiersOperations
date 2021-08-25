@@ -15,10 +15,10 @@ class SafetyController{
         return entry;
     }
 
-    async getAllSafetyEntries(depID_){
-        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesBySafety] :depID',
+    async getAllSafetyEntries(tier){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesBySafety] :tier',
             {replacements: {
-                depID: depID_
+                tier: tier
             }});
         return entry;
     }

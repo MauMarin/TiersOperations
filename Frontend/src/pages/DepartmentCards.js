@@ -1,15 +1,36 @@
 import { Helmet } from 'react-helmet';
+
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+
 import {
   Box,
   Container,
   Grid,
   Pagination
 } from '@material-ui/core';
-//import DepartmentCardToolbar from '../components/department_cards/DepartmentCardToolbar';
 import DepartmentCard from '../components/department_cards/DepartmentCard';
-import products from '../__mocks__/departments';
 
-const DepartmentCards = () => (
+export default function DepartmentCards() {
+
+  const [isLoading, setLoading] = useState(true);
+  const [entries, setEntries] = useState();
+
+  useEffect(() => {
+    const depID = 1;
+    axios.get("http://localhost:8080/api/department/allDepartments").then(response => {
+      console.log(response.data)
+      setEntries(response.data)
+      setLoading(false);
+    });
+  }, []);
+
+
+  if (isLoading) {
+    return <div className="App">Loading...</div>;
+  }
+
+  return(
   <>
     <Helmet>
       <title>Departments</title>
@@ -28,7 +49,7 @@ const DepartmentCards = () => (
             container
             spacing={3}
           >
-            {products.map((product) => (
+            {entries.map((product) => (
               <Grid
                 item
                 key={product.id}
@@ -58,5 +79,4 @@ const DepartmentCards = () => (
     </Box>
   </>
 );
-
-export default DepartmentCards;
+}

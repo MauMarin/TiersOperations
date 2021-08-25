@@ -15,10 +15,10 @@ class ServiceController{
         return entry;
     }
 
-    async getAllServiceEntries(depID_){
-        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByService] :depID',
+    async getAllServiceEntries(tier_){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByService] :tier',
             {replacements: {
-                depID: depID_
+                tier: tier_
             }});
         return entry;
     }

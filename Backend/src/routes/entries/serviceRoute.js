@@ -21,7 +21,8 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, tier, op20, op40, op60, op65, op70, intervention, OEE} = req.body;
+    const {reportDate, createdBy, tier, op20, op40, op60, op65, op70, intervention, OEE} = req.body.tier;
+    //const {reportDate, createdBy, tier, op20, op40, op60, op65, op70, intervention, OEE} = req.body;
     try{
         controller.insertServiceEntry(reportDate, createdBy, tier, op20, op40, op60, op65, op70, intervention, OEE)
         .then(() => {
@@ -103,9 +104,9 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/allEntries', (req, res) => {
-    const {depID} = req.body;
+    const {tier} = req.body;
     try{
-        controller.getAllServiceEntries(depID)
+        controller.getAllServiceEntries(tier)
         .then(response => {
             const entry = response;
             res.json(entry[0]);

@@ -27,42 +27,36 @@ const EntryForm = (props) => {
                 tier: '',
                 createdBy: '',
                 reportDate: '',
-                scrap: '',
-                conversionLoss: '',
-                toolConsumption: '',
-                toolRate: '',
-                earnHours: '',
-                energyRate: '',
+                HOs: '',
+                TRIR: '',
+                firstAid: '',
+                nearMiss: ''
             }}
             validationSchema={Yup.object().shape({
                 tier: Yup.number().required('Tier is required'),
                 createdBy: Yup.number().required('userID is required'),
                 reportDate: Yup.string().required('Report date is required'),
-                scrap: Yup.number().required('Scrap is required'),
-                conversionLoss: Yup.number().required('Conversion loss is required'),
-                toolConsumption: Yup.number().required('Tool consumption is required'),
-                toolRate: Yup.number().required('Tool rate is required'),
-                earnHours: Yup.number().required('Energy hours is required'),
-                energyRate: Yup.number().required('Energy rate is required'),
+                HOs: Yup.number().required('Scrap is required'),
+                TRIR: Yup.number().required('Conversion loss is required'),
+                firstAid: Yup.number().required('Tool consumption is required'),
+                nearMiss: Yup.number().required('Tool consumption is required')
             })}
 
             //initial call to backend
-            onSubmit={(tier, createdBy, reportDate, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate) => {
+            onSubmit={(tier, createdBy, reportDate, HOs, TRIR, firstAid, nearMiss) => {
 
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/api/entries/cost/insert',
+                url: 'http://localhost:8080/api/entries/safety/insert',
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
                     tier: tier,
                     createdBy: createdBy, 
                     reportDate: reportDate,
-                    scrap: scrap,
-                    conversionLoss: conversionLoss,
-                    toolConsumption: toolConsumption,
-                    toolRate: toolRate,
-                    earnHours: earnHours, 
-                    energyRate: energyRate
+                    HOs: HOs,
+                    TRIR: TRIR,
+                    firstAid: firstAid,
+                    nearMiss: nearMiss
                 }
             })
             .then((response) => {
@@ -152,11 +146,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Scrap amount"
-                                        name="scrap"
+                                        label="HOs"
+                                        name="HOs"
                                         onChange={handleChange}
                                         required
-                                        value={values.scrap}
+                                        value={values.HOs}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -168,11 +162,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Conversion loss"
-                                        name="conversionLoss"
+                                        label="TRIR"
+                                        name="TRIR"
                                         onChange={handleChange}
                                         required
-                                        value={values.conversionLoss}
+                                        value={values.TRIR}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -184,11 +178,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Daily tool consumption"
-                                        name="toolConsumption"
+                                        label="First Aid"
+                                        name="firstAid"
                                         onChange={handleChange}
                                         required
-                                        value={values.toolConsumption}
+                                        value={values.firstAid}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -200,48 +194,14 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Tool rate"
-                                        name="toolRate"
+                                        label="Near Miss"
+                                        name="nearMiss"
                                         onChange={handleChange}
                                         required
-                                        value={values.toolRate}
+                                        value={values.nearMiss}
                                         variant="outlined"
                                     />
                                 </Grid>
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="Earn hours"
-                                        name="earnHours"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.earnHours}
-                                        variant="outlined"
-                                    />
-                                </Grid>
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="Energy rate"
-                                        name="energyRate"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.energyRate}
-                                        variant="outlined"
-                                    >
-                                    </TextField>
-                                </Grid>
-
 
                             </Grid>
                         </CardContent>

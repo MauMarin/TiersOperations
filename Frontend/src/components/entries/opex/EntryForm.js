@@ -27,42 +27,33 @@ const EntryForm = (props) => {
                 tier: '',
                 createdBy: '',
                 reportDate: '',
-                scrap: '',
-                conversionLoss: '',
-                toolConsumption: '',
-                toolRate: '',
-                earnHours: '',
-                energyRate: '',
+                evaluation6S: '',
+                trainingOnTime: '',
+                completedOnTime: ''
             }}
             validationSchema={Yup.object().shape({
                 tier: Yup.number().required('Tier is required'),
                 createdBy: Yup.number().required('userID is required'),
                 reportDate: Yup.string().required('Report date is required'),
-                scrap: Yup.number().required('Scrap is required'),
-                conversionLoss: Yup.number().required('Conversion loss is required'),
-                toolConsumption: Yup.number().required('Tool consumption is required'),
-                toolRate: Yup.number().required('Tool rate is required'),
-                earnHours: Yup.number().required('Energy hours is required'),
-                energyRate: Yup.number().required('Energy rate is required'),
+                evaluation6S: Yup.number().required('Scrap is required'),
+                trainingOnTime: Yup.number().required('Conversion loss is required'),
+                completedOnTime: Yup.number().required('Tool consumption is required')
             })}
 
             //initial call to backend
-            onSubmit={(tier, createdBy, reportDate, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate) => {
+            onSubmit={(tier, createdBy, reportDate, evaluation6S, trainingOnTime, completedOnTime) => {
 
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/api/entries/cost/insert',
+                url: 'http://localhost:8080/api/entries/opex/insert',
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
                     tier: tier,
                     createdBy: createdBy, 
                     reportDate: reportDate,
-                    scrap: scrap,
-                    conversionLoss: conversionLoss,
-                    toolConsumption: toolConsumption,
-                    toolRate: toolRate,
-                    earnHours: earnHours, 
-                    energyRate: energyRate
+                    evaluation6S: evaluation6S,
+                    trainingOnTime: trainingOnTime,
+                    completedOnTime: completedOnTime
                 }
             })
             .then((response) => {
@@ -152,11 +143,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Scrap amount"
-                                        name="scrap"
+                                        label="6S Evaluation"
+                                        name="evaluation6S"
                                         onChange={handleChange}
                                         required
-                                        value={values.scrap}
+                                        value={values.evaluation6S}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -168,11 +159,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Conversion loss"
-                                        name="conversionLoss"
+                                        label="Training on time"
+                                        name="trainingOnTime"
                                         onChange={handleChange}
                                         required
-                                        value={values.conversionLoss}
+                                        value={values.trainingOnTime}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -184,64 +175,14 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Daily tool consumption"
-                                        name="toolConsumption"
+                                        label="Completed on time"
+                                        name="completedOnTime"
                                         onChange={handleChange}
                                         required
-                                        value={values.toolConsumption}
+                                        value={values.completedOnTime}
                                         variant="outlined"
                                     />
                                 </Grid>
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="Tool rate"
-                                        name="toolRate"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.toolRate}
-                                        variant="outlined"
-                                    />
-                                </Grid>
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="Earn hours"
-                                        name="earnHours"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.earnHours}
-                                        variant="outlined"
-                                    />
-                                </Grid>
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="Energy rate"
-                                        name="energyRate"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.energyRate}
-                                        variant="outlined"
-                                    >
-                                    </TextField>
-                                </Grid>
-
 
                             </Grid>
                         </CardContent>

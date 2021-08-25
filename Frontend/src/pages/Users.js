@@ -1,8 +1,6 @@
 import { Helmet } from 'react-helmet';
 import { Box, Container } from '@material-ui/core';
-import EntriesToolbar from '../components/entries/EntryToolbar';
 import UserResults from '../components/users/UserResults';
-//import customers from '../__mocks__/OpExPlaceholder';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
@@ -37,7 +35,6 @@ export default function OpExEntryList(){
       }}
     >
       <Container maxWidth={false}>
-        <EntriesToolbar />
         <Box sx={{ pt: 3 }}>
             <UserResults customers={entries} />
         </Box>

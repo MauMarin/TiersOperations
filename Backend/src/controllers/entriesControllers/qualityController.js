@@ -96,10 +96,10 @@ class QualityController{
         }});
     };
 
-    async getAllQualityEntries(depID_){
-        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByQuality] :depID',
+    async getAllQualityEntries(tier_){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByQuality] :tier',
             {replacements: {
-                depID: depID_
+                tier: tier_
             }});
         return entry;
     }

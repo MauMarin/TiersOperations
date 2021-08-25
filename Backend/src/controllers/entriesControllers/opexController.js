@@ -15,10 +15,10 @@ class OpexController{
         return entry;
     }
 
-    async getAllOpexEntries(depID_){
-        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByOpex] :depID',
+    async getAllOpexEntries(tier_){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByOpex] :tier',
             {replacements: {
-                depID: depID_
+                tier: tier_
             }});
         return entry;
     }

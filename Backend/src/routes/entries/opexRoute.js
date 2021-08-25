@@ -21,7 +21,8 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, tier, evaluation6S, trainingOnTime, completedOnTime} = req.body;
+    const {reportDate, createdBy, tier, evaluation6S, trainingOnTime, completedOnTime} = req.body.tier;
+    //const {reportDate, createdBy, tier, evaluation6S, trainingOnTime, completedOnTime} = req.body;
     try{
         controller.insertOpexEntry(reportDate, createdBy, tier, evaluation6S, trainingOnTime, completedOnTime)
         .then(() => {
@@ -95,9 +96,9 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/allEntries', (req, res) => {
-    const {depID} = req.body;
+    const {tier} = req.body;
     try{
-        controller.getAllOpexEntries(depID)
+        controller.getAllOpexEntries(tier)
         .then(response => {
             const entry = response;
             res.json(entry[0]);

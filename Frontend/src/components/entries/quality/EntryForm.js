@@ -27,42 +27,43 @@ const EntryForm = (props) => {
                 tier: '',
                 createdBy: '',
                 reportDate: '',
-                scrap: '',
-                conversionLoss: '',
-                toolConsumption: '',
-                toolRate: '',
-                earnHours: '',
-                energyRate: '',
+                larOverall: '',
+                larHumacao: '',
+                larWarsaw: '',
+                fpy25: '',
+                fly65: '',
+                NCROpen: ''
+
             }}
             validationSchema={Yup.object().shape({
                 tier: Yup.number().required('Tier is required'),
                 createdBy: Yup.number().required('userID is required'),
                 reportDate: Yup.string().required('Report date is required'),
-                scrap: Yup.number().required('Scrap is required'),
-                conversionLoss: Yup.number().required('Conversion loss is required'),
-                toolConsumption: Yup.number().required('Tool consumption is required'),
-                toolRate: Yup.number().required('Tool rate is required'),
-                earnHours: Yup.number().required('Energy hours is required'),
-                energyRate: Yup.number().required('Energy rate is required'),
+                larOverall: Yup.number().required('Scrap is required'),
+                larWarsaw: Yup.number().required('Conversion loss is required'),
+                larHumacao: Yup.number().required('Tool consumption is required'),
+                fpy25: Yup.number().required('Tool consumption is required'),
+                fly65: Yup.number().required('Tool consumption is required'),
+                NCROpen: Yup.number().required('Tool consumption is required')
             })}
 
             //initial call to backend
-            onSubmit={(tier, createdBy, reportDate, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate) => {
+            onSubmit={(tier, createdBy, reportDate, larOverall, larHumacao, larWarsaw, fpy25, fly65, NCROpen) => {
 
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/api/entries/cost/insert',
+                url: 'http://localhost:8080/api/entries/quality/insert',
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
                     tier: tier,
                     createdBy: createdBy, 
                     reportDate: reportDate,
-                    scrap: scrap,
-                    conversionLoss: conversionLoss,
-                    toolConsumption: toolConsumption,
-                    toolRate: toolRate,
-                    earnHours: earnHours, 
-                    energyRate: energyRate
+                    larOverall: larOverall, 
+                    larHumacao: larHumacao,
+                    larWarsaw: larWarsaw,
+                    fpy25: fpy25,
+                    fly65: fly65,
+                    NCROpen: NCROpen
                 }
             })
             .then((response) => {
@@ -152,11 +153,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Scrap amount"
-                                        name="scrap"
+                                        label="Lot Acceptance Rate - Overall"
+                                        name="larOverall"
                                         onChange={handleChange}
                                         required
-                                        value={values.scrap}
+                                        value={values.larOverall}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -168,11 +169,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Conversion loss"
-                                        name="conversionLoss"
+                                        label="Lot Acceptance Rate - Humacao"
+                                        name="larHumacao"
                                         onChange={handleChange}
                                         required
-                                        value={values.conversionLoss}
+                                        value={values.larHumacao}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -184,11 +185,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Daily tool consumption"
-                                        name="toolConsumption"
+                                        label="Lot Acceptance Rate - Warsaw"
+                                        name="larWarsaw"
                                         onChange={handleChange}
                                         required
-                                        value={values.toolConsumption}
+                                        value={values.larWarsaw}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -200,11 +201,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Tool rate"
-                                        name="toolRate"
+                                        label="FPY OP 25"
+                                        name="fpy25"
                                         onChange={handleChange}
                                         required
-                                        value={values.toolRate}
+                                        value={values.fpy25}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -216,11 +217,11 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Earn hours"
-                                        name="earnHours"
+                                        label="FPY OP65"
+                                        name="fly65"
                                         onChange={handleChange}
                                         required
-                                        value={values.earnHours}
+                                        value={values.fly65}
                                         variant="outlined"
                                     />
                                 </Grid>
@@ -232,16 +233,14 @@ const EntryForm = (props) => {
                                     <TextField
                                         type="number"
                                         fullWidth
-                                        label="Energy rate"
-                                        name="energyRate"
+                                        label="NCRs Open"
+                                        name="NCROpen"
                                         onChange={handleChange}
                                         required
-                                        value={values.energyRate}
+                                        value={values.NCROpen}
                                         variant="outlined"
-                                    >
-                                    </TextField>
+                                    />
                                 </Grid>
-
 
                             </Grid>
                         </CardContent>

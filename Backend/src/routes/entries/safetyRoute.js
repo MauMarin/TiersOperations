@@ -21,7 +21,8 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, tier, HOs, TRIR, firstAid, nearMiss} = req.body;
+    const {reportDate, createdBy, tier, HOs, TRIR, firstAid, nearMiss} = req.body.tier;
+    //const {reportDate, createdBy, tier, HOs, TRIR, firstAid, nearMiss} = req.body;
     try{
         controller.insertSafetyEntry(reportDate, createdBy, tier, HOs, TRIR, firstAid, nearMiss)
         .then(() => {
@@ -97,9 +98,9 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/allEntries', (req, res) => {
-    const {depID} = req.body;
+    const {tier} = req.body;
     try{
-        controller.getAllSafetyEntries(depID)
+        controller.getAllSafetyEntries(tier)
         .then(response => {
             const entry = response;
             res.json(entry[0]);

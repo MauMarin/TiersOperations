@@ -1,4 +1,4 @@
-'use strict';
+
 
 const express = require('express');
 var CostController = require('../../controllers/entriesControllers/costController');
@@ -21,10 +21,12 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body;
+    //const {reportDate, createdBy, tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body;
+    console.log(req.body.tier);
+    const {reportDate, createdBy, tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body.tier;
 
     try{
-        controller.insertCostEntry(reportDate, createdBy,tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate)
+        controller.insertCostEntry(reportDate, createdBy, tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate)
         .then(() => {
             return res.json({success: true, message: 'Entry has succesfully been submitted'});
         })
@@ -101,9 +103,9 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/allEntries', (req, res) => {
-    const {depID} = req.body;
+    const {tier} = req.body;
     try{
-        controller.getAllCostEntries(depID)
+        controller.getAllCostEntries(tier)
         .then(response => {
             const entry = response;
             res.json(entry[0]);

@@ -13,7 +13,6 @@ import {
   TableRow,
   Typography
 } from '@material-ui/core';
-//import getInitials from 'src/utils/getInitials';
 
 const EntryResults = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
@@ -216,7 +215,7 @@ const EntryResults = ({ customers, ...rest }) => {
         onRowsPerPageChange={handleLimitChange}
         page={page}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25]}
       />
     </Card>
   );
