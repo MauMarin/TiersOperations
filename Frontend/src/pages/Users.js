@@ -1,13 +1,17 @@
 import { Helmet } from 'react-helmet';
-import { Box, Container } from '@material-ui/core';
+import { Box, Button, Container } from '@material-ui/core';
+
+
 import UserResults from '../components/users/UserResults';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import UserPopup from '../components/users/UserPopup'
 
-export default function OpExEntryList(){
+export default function Users(props){
 
   const [isLoading, setLoading] = useState(true);
   const [entries, setEntries] = useState();
+  const [openPopup, setOpenPopup] = useState(false);
 
   useEffect(() => {
     const depID = 1;
@@ -35,11 +39,38 @@ export default function OpExEntryList(){
       }}
     >
       <Container maxWidth={false}>
+        
+      <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end'
+            }}
+          >
+
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => setOpenPopup(true)}
+            >
+              Add new user
+            </Button>
+
+
+          </Box>
+
         <Box sx={{ pt: 3 }}>
             <UserResults customers={entries} />
         </Box>
       </Container>
     </Box>
+
+    <UserPopup
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      >
+
+      </UserPopup>
+
   </>
   )
 };

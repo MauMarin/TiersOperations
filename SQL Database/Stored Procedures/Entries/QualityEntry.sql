@@ -140,7 +140,7 @@ BEGIN
 END 
 GO
 CREATE PROC [dbo].[usp_EntriesByQuality]  
-    @depID int
+    @tier int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -150,7 +150,7 @@ AS
 	select e.*, c.* from Entry e
     inner join QualityEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
-	where u.depID = @depID
+	where e.tier = @tier
 
 	COMMIT
 GO

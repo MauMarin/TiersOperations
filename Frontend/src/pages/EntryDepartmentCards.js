@@ -11,13 +11,14 @@ import {
 } from '@material-ui/core';
 import DepartmentCard from '../components/department_cards/DepartmentCard';
 
-export default function DepartmentCards() {
+export default function DepartmentCards({section}) {
 
   const [isLoading, setLoading] = useState(true);
   const [entries, setEntries] = useState();
 
+  console.log(section);
+
   useEffect(() => {
-    const depID = 1;
     axios.get("http://localhost:8080/api/department/allDepartments").then(response => {
       console.log(response.data)
       setEntries(response.data)
@@ -57,7 +58,7 @@ export default function DepartmentCards() {
                 md={6}
                 xs={12}
               >
-                <DepartmentCard product={product} />
+                <DepartmentCard product={product} section={section} />
               </Grid>
             ))}
           </Grid>

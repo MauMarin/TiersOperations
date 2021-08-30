@@ -1,3 +1,5 @@
+USE [TiersOperations];
+GO
 
 IF OBJECT_ID('[dbo].[usp_CardsSelect]') IS NOT NULL
 BEGIN 
@@ -18,6 +20,8 @@ AS
 
 	COMMIT
 GO
+
+
 IF OBJECT_ID('[dbo].[usp_CardsInsert]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_CardsInsert] 
@@ -53,6 +57,8 @@ AS
                
 	COMMIT
 GO
+
+
 IF OBJECT_ID('[dbo].[usp_CardsUpdate]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_CardsUpdate] 
@@ -90,6 +96,8 @@ AS
 
 	COMMIT
 GO
+
+
 IF OBJECT_ID('[dbo].[usp_CardsDelete]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_CardsDelete] 
@@ -109,6 +117,45 @@ AS
 
 	COMMIT
 GO
-----------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------
 
+
+IF OBJECT_ID('[dbo].[usp_ChangeStatus]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_ChangeStatus] 
+END 
+GO
+CREATE PROC [dbo].[usp_ChangeStatus] 
+    @idCard int,
+    @status varchar(10)
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	UPDATE [dbo].[Cards]
+	SET    [status] = @status
+	WHERE  [id] = @idCard
+	
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_GetByStatus]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_GetByStatus] 
+END 
+GO
+CREATE PROC [dbo].[usp_GetByStatus] 
+    @status varchar(10)
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	select c.* from Cards c
+	where c.status = @status
+	
+	COMMIT
+GO

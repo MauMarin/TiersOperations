@@ -145,6 +145,27 @@ AS
 
 	COMMIT
 GO
+
+
+IF OBJECT_ID('[dbo].[usp_GetAllUsers]') IS NOT NULL
+BEGIN
+	DROP PROC [dbo].[usp_GetAllUsers]
+END
+GO
+CREATE PROC [dbo].[usp_GetAllUsers]
+AS
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select u.id, u.name, u.username, d.name as "Department", r.name as "Role" from Users u
+	inner join Department d on u.depID = d.id
+    inner join Role r on u.role = r.id
+    order by d.name asc
+
+	COMMIT
+GO
 ----------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------
 

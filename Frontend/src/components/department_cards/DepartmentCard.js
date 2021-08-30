@@ -14,40 +14,58 @@ import Update from '@material-ui/icons/Update';
 
 import { useNavigate } from 'react-router-dom';
 
-const clickHandle = (navigate, product) =>{
-  switch(product.title){
-    case "Cost":
-      console.log("Cost case");
-      navigate('/app/entries-c', { replace: true });
-      break;
-    case "OpEx":
-      console.log("OpEx case");
-      navigate('/app/opex-entries', { replace: true });
-      break;
-    case "Quality":
-      console.log("Quality case");
-      navigate('/app/quality-entries', { replace: true });
-      break;
-    case "Safety":
-      console.log("Safety case");
-      navigate('/app/safety-entries', { replace: true });
-      break;
-    case "Service":
-      console.log("Service case");
-      navigate('/app/service-entries', { replace: true });
-      break;
-    default:
-      console.log("hsdgvzcg");
+const clickHandle = (navigate, product, section) =>{
+  if(section === "1"){
+    switch(product.name){
+      case "Cost":
+        navigate('/app/entries-c', { replace: true });
+        break;
+      case "OpEx":
+        navigate('/app/opex-entries', { replace: true });
+        break;
+      case "Quality":
+        navigate('/app/quality-entries', { replace: true });
+        break;
+      case "Safety":
+        navigate('/app/safety-entries', { replace: true });
+        break;
+      case "Service":
+        navigate('/app/service-entries', { replace: true });
+        break;
+      default:
+        console.log("(=^w^=)");
+    }
+  }
+  else{
+    switch(product.name){
+      case "Cost":
+        navigate('/app/cost-goals', { replace: true });
+        break;
+      case "OpEx":
+        navigate('/app/opex-goals', { replace: true });
+        break;
+      case "Quality":
+        navigate('/app/quality-goals', { replace: true });
+        break;
+      case "Safety":
+        navigate('/app/safety-goals', { replace: true });
+        break;
+      case "Service":
+        navigate('/app/service-goals', { replace: true });
+        break;
+      default:
+        console.log("(=^w^=)");
+    }
   }
 }
 
-export default function DepartmentCard ({ product, ...rest }) {
+export default function DepartmentCard ({ product, section, ...rest }) {
 
   const navigate = useNavigate();
 
   return (
   <Card
-    onClick = {() => clickHandle(navigate, product)}
+    onClick = {() => clickHandle(navigate, product, section)}
     sx={{
       display: 'flex',
       flexDirection: 'column',
@@ -75,7 +93,7 @@ export default function DepartmentCard ({ product, ...rest }) {
         gutterBottom
         variant="h4"
       >
-        {product.title}
+        {product.name}
       </Typography>
       <Typography
         align="center"

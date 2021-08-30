@@ -125,6 +125,26 @@ AS
 
 	COMMIT
 GO
+
+
+IF OBJECT_ID('[dbo].[usp_GoalsByQuality]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_GoalsByQuality] 
+END 
+GO
+CREATE PROC [dbo].[usp_GoalsByQuality]
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select g.*, d.name, c.* from Goals g
+    inner join QualityGoal c on g.id = c.goalID
+    inner join Department d on d.id = g.depID
+
+	COMMIT
+GO
 ----------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------
 

@@ -21,7 +21,8 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {name, username, depID, role, password} = req.body;
+    const {name, username, depID, role, password} = req.body.name;
+    //const {name, username, depID, role, password} = req.body;
 
     try{
         controller.insertUser(name, username, depID, role, password)
@@ -89,7 +90,6 @@ router.post('/getAll', (req, res) => {
         controller.getAllUsers()
         .then(response => {
             const entry  = response;
-            console.log(entry)
             res.json(entry[0]);
         })
     }

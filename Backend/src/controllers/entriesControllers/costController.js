@@ -25,16 +25,6 @@ class CostController{
 
     async insertCostEntry(_reportDate, _createdBy, _tier, _scrap, _conversionLoss, _toolConsumption, _toolRate, _earnHours, _energyRate){
 
-        console.log(_reportDate)
-        console.log(_createdBy)
-        console.log(_tier)
-        console.log(_scrap)
-        console.log(_conversionLoss)
-        console.log(_toolConsumption)
-        console.log(_toolRate)
-        console.log(_earnHours)
-        console.log(_energyRate)
-
         console.log(_reportDate, _createdBy, _tier, _scrap, _conversionLoss, _toolConsumption, _toolRate, _earnHours, _energyRate)
 
         const _createdDate = moment().format('YYYY-MM-DD HH:mm:ss');

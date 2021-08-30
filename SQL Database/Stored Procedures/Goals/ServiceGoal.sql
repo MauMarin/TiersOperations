@@ -83,8 +83,7 @@ CREATE PROC [dbo].[usp_ServiceGoalUpdate]
     @op65 int,
     @op70 int,
     @intervention int,
-    @OEE float,
-    @goalID int
+    @OEE float
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -92,8 +91,10 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[ServiceGoal]
-	SET    [op20] = @op20, [op40] = @op40, [op60] = @op60, [op65] = @op65, [op70] = @op70, [intervention] = @intervention, [OEE] = @OEE, [goalID] = @goalID
+	SET    [op20] = @op20, [op40] = @op40, [op60] = @op60, [op65] = @op65, [op70] = @op70, [intervention] = @intervention, [OEE] = @OEE, [goalID] = @idGoal
 	WHERE  [goalID] = @idGoal
+
+	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth, @monthly
 	
 	-- Begin Return Select <- do not remove
 	SELECT [id], [op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [goalID]
@@ -123,6 +124,25 @@ AS
 	WHERE  [goalID] = @idGoal
 
 	exec usp_GoalsDelete @idGoal
+
+	COMMIT
+GO
+
+IF OBJECT_ID('[dbo].[usp_GoalsByService]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_GoalsByService] 
+END 
+GO
+CREATE PROC [dbo].[usp_GoalsByService]
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select g.*, d.name, c.* from Goals g
+    inner join ServiceGoal c on g.id = c.goalID
+    inner join Department d on d.id = g.depID
 
 	COMMIT
 GO

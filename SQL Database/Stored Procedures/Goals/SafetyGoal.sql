@@ -87,6 +87,8 @@ AS
 	UPDATE [dbo].[SafetyGoal]
 	SET    [HOs] = @HOs, [TRIR] = @TRIR, [firstAid] = @firstAid, [nearMiss] = @nearMiss, [goalID] = @idGoal
 	WHERE  [goalID] = @idGoal
+
+	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth, @monthly
 	
 	-- Begin Return Select <- do not remove
 	SELECT [id], [HOs], [TRIR], [firstAid], [nearMiss], [goalID]
@@ -116,6 +118,26 @@ AS
 	WHERE  [goalID] = @idGoal
 
 	exec usp_GoalsDelete @idGoal
+
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_GoalsBySafety]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_GoalsBySafety] 
+END 
+GO
+CREATE PROC [dbo].[usp_GoalsBySafety]
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select g.*, d.name, c.* from Goals g
+    inner join SafetyGoal c on g.id = c.goalID
+    inner join Department d on d.id = g.depID
 
 	COMMIT
 GO
