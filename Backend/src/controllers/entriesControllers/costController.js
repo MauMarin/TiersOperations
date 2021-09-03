@@ -15,17 +15,14 @@ class CostController{
         return entry;
     }
 
-    async getAllCostEntries(depID_){
-        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByCost] :depID',
-            {replacements: {
-                depID: depID_
-            }});
+    async getAllCostEntries(){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByCost]');
         return entry;
     }
 
-    async insertCostEntry(_reportDate, _createdBy, _tier, _scrap, _conversionLoss, _toolConsumption, _toolRate, _earnHours, _energyRate){
+    async insertCostEntry(_reportDate, _createdBy, _scrap, _conversionLoss, _toolConsumption, _toolRate, _earnHours, _energyRate){
 
-        console.log(_reportDate, _createdBy, _tier, _scrap, _conversionLoss, _toolConsumption, _toolRate, _earnHours, _energyRate)
+        console.log(_reportDate, _createdBy, _scrap, _conversionLoss, _toolConsumption, _toolRate, _earnHours, _energyRate)
 
         const _createdDate = moment().format('YYYY-MM-DD HH:mm:ss');
         const _modifiedDate = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -36,7 +33,7 @@ class CostController{
         const _fiscalYear = fiscal.getYear(year, month);
         const _fiscalMonth = fiscal.getMonth(month);
 
-        await connection.sequelize.query('EXEC [dbo].[usp_CostEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :tier, :scrap, :conversionLoss, :toolConsumption, :toolRate, :earnHours, :energyRate',
+        await connection.sequelize.query('EXEC [dbo].[usp_CostEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :scrap, :conversionLoss, :toolConsumption, :toolRate, :earnHours, :energyRate',
         {replacements:{
             fiscalYear: _fiscalYear, 
             fiscalMonth: _fiscalMonth, 
@@ -47,7 +44,6 @@ class CostController{
             createdDate: _createdDate, 
             modifiedDate: _modifiedDate, 
             
-            tier: _tier, 
             scrap: _scrap, 
             conversionLoss: _conversionLoss, 
             toolConsumption: _toolConsumption, 
@@ -66,7 +62,6 @@ class CostController{
         _modifiedBy,
         _createdDate,
         //_modifiedDate,
-        _tier,
         _scrap,
         _conversionLoss,
         _toolConsumption,
@@ -76,7 +71,7 @@ class CostController{
 
         const modifiedDate = moment().format('YYYY-MM-DD HH:ss:mm');
         
-        await connection.sequelize.query('EXEC [dbo].[usp_CostEntryUpdate] :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :tier, :scrap, :conversionLoss, :toolConsumption, :toolRate, :earnHours, :energyRate',
+        await connection.sequelize.query('EXEC [dbo].[usp_CostEntryUpdate] :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :scrap, :conversionLoss, :toolConsumption, :toolRate, :earnHours, :energyRate',
         {replacements: {
             idEntry: _idEntry,
             fiscalYear: _fiscalYear, 
@@ -88,7 +83,6 @@ class CostController{
             createdDate: _createdDate, 
             modifiedDate: modifiedDate, 
             
-            tier: _tier, 
             scrap: _scrap, 
             conversionLoss: _conversionLoss, 
             toolConsumption: _toolConsumption, 

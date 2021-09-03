@@ -7,15 +7,19 @@ const moment = require('moment');
 class CardController{
     constructor(){}
 
-    async insertCard(status_, dueDate_, department_, submittedBy_, directedTo_, actionPlan_, createdBy_, currID_, tier_){
+    async insertCard(status_, dueDate_, department_, description_, submittedBy_, directedTo_, actionPlan_, createdBy_, currID_, tier_){
+
+        console.log(status_, dueDate_, department_, description_, submittedBy_, directedTo_, actionPlan_, createdBy_, currID_, tier_)
+        
         const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
         const modifiedDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
 
-        await connection.sequelize.query('EXEC [dbo].[usp_CardsInsert] :status, :dueDate, :department, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :creationDate, :modifiedDate, :currID, :tier',
+        await connection.sequelize.query('EXEC [dbo].[usp_CardsInsert] :status, :dueDate, :department, :description, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :creationDate, :modifiedDate, :currID, :tier',
         {replacements:{
             status: status_,
             dueDate: dueDate_, 
             department: department_, 
+            description: description_,
             submittedBy: submittedBy_, 
             directedTo: directedTo_, 
             actionPlan: actionPlan_, 

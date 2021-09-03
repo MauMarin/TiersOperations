@@ -32,7 +32,6 @@ const EntryForm = (props) => {
                 completedOnTime: ''
             }}
             validationSchema={Yup.object().shape({
-                tier: Yup.number().required('Tier is required'),
                 createdBy: Yup.number().required('userID is required'),
                 reportDate: Yup.string().required('Report date is required'),
                 evaluation6S: Yup.number().required('Scrap is required'),
@@ -41,14 +40,13 @@ const EntryForm = (props) => {
             })}
 
             //initial call to backend
-            onSubmit={(tier, createdBy, reportDate, evaluation6S, trainingOnTime, completedOnTime) => {
+            onSubmit={(createdBy, reportDate, evaluation6S, trainingOnTime, completedOnTime) => {
 
             axios({
                 method: 'post',
                 url: 'http://localhost:8080/api/entries/opex/insert',
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
-                    tier: tier,
                     createdBy: createdBy, 
                     reportDate: reportDate,
                     evaluation6S: evaluation6S,
@@ -88,22 +86,6 @@ const EntryForm = (props) => {
                                 container
                                 spacing={3}
                             >
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="Tier"
-                                        name="tier"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.tier}
-                                        variant="outlined"
-                                    />
-                                </Grid>
                                 <Grid
                                     item
                                     md={6}

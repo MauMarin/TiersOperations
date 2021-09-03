@@ -24,7 +24,6 @@ const EntryForm = (props) => {
     return (
         <Formik
             initialValues={{
-                tier: '',
                 createdBy: '',
                 reportDate: '',
                 HOs: '',
@@ -33,7 +32,6 @@ const EntryForm = (props) => {
                 nearMiss: ''
             }}
             validationSchema={Yup.object().shape({
-                tier: Yup.number().required('Tier is required'),
                 createdBy: Yup.number().required('userID is required'),
                 reportDate: Yup.string().required('Report date is required'),
                 HOs: Yup.number().required('Scrap is required'),
@@ -43,14 +41,13 @@ const EntryForm = (props) => {
             })}
 
             //initial call to backend
-            onSubmit={(tier, createdBy, reportDate, HOs, TRIR, firstAid, nearMiss) => {
+            onSubmit={(createdBy, reportDate, HOs, TRIR, firstAid, nearMiss) => {
 
             axios({
                 method: 'post',
                 url: 'http://localhost:8080/api/entries/safety/insert',
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
-                    tier: tier,
                     createdBy: createdBy, 
                     reportDate: reportDate,
                     HOs: HOs,
@@ -91,22 +88,7 @@ const EntryForm = (props) => {
                                 container
                                 spacing={3}
                             >
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="Tier"
-                                        name="tier"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.tier}
-                                        variant="outlined"
-                                    />
-                                </Grid>
+                                
                                 <Grid
                                     item
                                     md={6}

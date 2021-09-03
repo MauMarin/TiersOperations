@@ -36,7 +36,6 @@ CREATE PROC [dbo].[usp_ServiceEntryInsert]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> Service variables
 	@op20 int,
@@ -52,7 +51,7 @@ AS
 	
 	BEGIN TRAN
 
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
 	
 	INSERT INTO [dbo].[ServiceEntry] ([op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [entry])
 	SELECT @op20, @op40, @op60, @op65, @op70, @intervention, @OEE, @@IDENTITY
@@ -82,7 +81,6 @@ CREATE PROC [dbo].[usp_ServiceEntryUpdate]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> Service variables
     @op20 int,
@@ -140,17 +138,16 @@ BEGIN
 END 
 GO
 CREATE PROC [dbo].[usp_EntriesByService]  
-    @tier int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.id, e.fiscalYear, e.fiscalMonth, e.reportDate, u.name as createdBy, u2.name as modifiedBy, e.createdDate, e.modifiedDate, c.* from Entry e
     inner join ServiceEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
-	where e.tier = @tier
+    inner join Users u2 on e.modifiedBy = u2.id
 
 	COMMIT
 GO

@@ -15,7 +15,7 @@ class QualityController{
         return entry;
     }
 
-    async insertQualityEntry(reportDate_, createdBy_, tier_, larOverall_, larHumacao_, larWarsaw_, fpy25_, fly65_, NCROpen_){
+    async insertQualityEntry(reportDate_, createdBy_, larOverall_, larHumacao_, larWarsaw_, fly65_, NCROpen_){
 
         const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
         const modifiedDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -26,7 +26,7 @@ class QualityController{
         const fiscalYear_ = fiscal.getYear(year, month);
         const fiscalMonth_ = fiscal.getMonth(month);
 
-        await connection.sequelize.query('EXEC [dbo].[usp_QualityEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :tier, :larOverall, :larHumacao, :larWarsaw, :fpy25, :fly65, :NCROpen',
+        await connection.sequelize.query('EXEC [dbo].[usp_QualityEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :larOverall, :larHumacao, :larWarsaw, :fly65, :NCROpen',
         {replacements:{
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 
@@ -37,11 +37,9 @@ class QualityController{
             createdDate: createdDate_, 
             modifiedDate: modifiedDate_, 
             
-            tier: tier_,
             larOverall: larOverall_,
             larHumacao: larHumacao_,
             larWarsaw: larWarsaw_,
-            fpy25: fpy25_,
             fly65: fly65_,
             NCROpen: NCROpen_
         }});
@@ -56,17 +54,15 @@ class QualityController{
         modifiedBy_,
         createdDate_,
         //_modifiedDate,
-        tier_,
         larOverall_,
         larHumacao_,
         larWarsaw_,
-        fpy25_,
         fly65_,
         NCROpen_){
 
         const modifiedDate_ = moment().format('YYYY-MM-DD HH:ss:mm');
         
-        await connection.sequelize.query('EXEC [dbo].[usp_QualityEntryUpdate] :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :tier, :larOverall, :larHumacao, :larWarsaw, :fpy25, :fly65, :NCROpen',
+        await connection.sequelize.query('EXEC [dbo].[usp_QualityEntryUpdate] :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :larOverall, :larHumacao, :larWarsaw, :fly65, :NCROpen',
         {replacements: {
             idEntry: idEntry_,
             fiscalYear: fiscalYear_, 
@@ -78,11 +74,9 @@ class QualityController{
             createdDate: createdDate_, 
             modifiedDate: modifiedDate_, 
             
-            tier: tier_, 
             larOverall: larOverall_,
             larHumacao: larHumacao_,
             larWarsaw: larWarsaw_,
-            fpy25: fpy25_,
             fly65: fly65_,
             NCROpen: NCROpen_
         }});
@@ -96,11 +90,8 @@ class QualityController{
         }});
     };
 
-    async getAllQualityEntries(tier_){
-        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByQuality] :tier',
-            {replacements: {
-                tier: tier_
-            }});
+    async getAllQualityEntries(){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesByQuality]');
         return entry;
     }
 }

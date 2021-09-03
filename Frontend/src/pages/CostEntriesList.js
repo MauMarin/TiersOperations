@@ -6,17 +6,6 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import CostPopup from '../components/entries/cost/CostPopup';
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  Radio,
-  RadioGroup
-} from '@material-ui/core';
 
 export default function CostEntryList(props) {
 
@@ -24,28 +13,14 @@ export default function CostEntryList(props) {
   const [entries, setEntries] = useState({});
   const [openPopup, setOpenPopup] = useState(false);
 
-  const [value, setValue] = useState('');
-  const [helperText, setHelperText] = useState('');
 
-  const handleRadioChange = (event) => {
-    setValue(event.target.value);
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(value)
-    if (value === '2' || value === '3') {
-      axios.post("http://localhost:8080/api/entries/cost/allEntries", { tier: value }).then(response => {
-        console.log(response.data)
-        setEntries(response.data)
-      });
-    } else {
-      setHelperText('Please select an option.');
-    }
-  };
 
   useEffect(() => {
     setLoading(false);
+    axios.post("http://localhost:8080/api/entries/cost/allEntries").then(response => {
+        console.log(response.data)
+        setEntries(response.data)
+    });
   }, []);
 
   if (isLoading) {
@@ -55,67 +30,8 @@ export default function CostEntryList(props) {
   return (
     <>
       <Helmet>
-        <title>Entries</title>
+        <title>Cost Entries</title>
       </Helmet>
-
-      <Box
-        sx={{
-          py: 3
-        }}
-      >
-        <Container maxWidth="lg">
-          <Box sx={{ pt: 3 }}>
-            <form onSubmit={handleSubmit} {...props}>
-              <Card>
-                <CardHeader
-                  subheader="Select tier to visualize"
-                  title="Tier"
-                />
-                <Divider />
-                <CardContent>
-                  <Grid
-                    container
-                    spacing={6}
-                    wrap="wrap"
-                  >
-                    <Grid
-                      item
-                      md={4}
-                      sm={6}
-                      sx={{
-                        display: 'flex'
-                      }}
-                      xs={12}
-                    >
-                      <RadioGroup value={value} onChange={handleRadioChange}>
-                        <FormControlLabel value="2" control={<Radio />} label="Tier 2" />
-                        <FormControlLabel value="3" control={<Radio />} label="Tier 3" />
-                      </RadioGroup>
-                    </Grid>
-                  </Grid>
-                  <FormHelperText>{helperText}</FormHelperText>
-                </CardContent>
-                <Divider />
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    p: 2
-                  }}
-                >
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    type="submit"
-                  >
-                    View Tier
-                  </Button>
-                </Box>
-              </Card>
-            </form>
-          </Box>
-        </Container>
-      </Box>
 
       <Box
         sx={{

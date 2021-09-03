@@ -19,6 +19,9 @@ import {
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
+import CardsDisplay from '../components/cards/CardsDisplay'
+import CostPopup from '../components/cards/Popup';
+
 export default function CostEntryList(props) {
 
   useEffect(() => {
@@ -30,6 +33,8 @@ export default function CostEntryList(props) {
 
   const [isLoading, setLoading] = useState(true);
   const [entries, setEntries] = useState({});
+
+  const [openPopup, setOpenPopup] = useState(false);
 
   const handleRadioChange = (event) => {
     setValue(event.target.value);
@@ -69,7 +74,6 @@ export default function CostEntryList(props) {
         }}
       >
         <Container maxWidth="lg">
-
 
           <form onSubmit={handleSubmit} {...props}>
             <Card>
@@ -123,14 +127,52 @@ export default function CostEntryList(props) {
 
           {entries.length > 0 ? (
             <Box sx={{ pt: 3 }}>
-
+              <CardsDisplay cards={entries}/>
             </Box>
           ) : (<Box></Box>)}
 
           
 
         </Container>
+
+        <Box
+        sx={{
+          backgroundColor: 'background.default',
+          minHeight: '100%',
+          py: 3
+        }}
+      >
+        <Container maxWidth={false}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end'
+            }}
+          >
+
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() => setOpenPopup(true)}
+            >
+              Add new
+            </Button>
+
+
+          </Box>
+
+        </Container>
       </Box>
+      </Box>
+
+
+
+      <CostPopup
+        openPopup={openPopup}
+        setOpenPopup={setOpenPopup}
+      >
+
+      </CostPopup>
     </>
   )
 };

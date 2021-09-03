@@ -15,15 +15,12 @@ class SafetyController{
         return entry;
     }
 
-    async getAllSafetyEntries(tier){
-        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesBySafety] :tier',
-            {replacements: {
-                tier: tier
-            }});
+    async getAllSafetyEntries(){
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_EntriesBySafety]');
         return entry;
     }
 
-    async insertSafetyEntry(reportDate_, createdBy_, tier_, HOs_, TRIR_, firstAid_, nearMiss_){
+    async insertSafetyEntry(reportDate_, createdBy_, HOs_, TRIR_, firstAid_, nearMiss_){
 
         const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
         const modifiedDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -34,7 +31,7 @@ class SafetyController{
         const fiscalYear_ = fiscal.getYear(year, month);
         const fiscalMonth_ = fiscal.getMonth(month);
 
-        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :tier, :HOs, :TRIR, :firstAid, :nearMiss',
+        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :HOs, :TRIR, :firstAid, :nearMiss',
         {replacements:{
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 
@@ -45,7 +42,6 @@ class SafetyController{
             createdDate: createdDate_, 
             modifiedDate: modifiedDate_, 
             
-            tier: tier_,
             HOs: HOs_,
             TRIR: TRIR_,
             firstAid: firstAid_,
@@ -62,7 +58,7 @@ class SafetyController{
         modifiedBy_,
         createdDate_,
         //_modifiedDate,
-        tier_,
+
         HOs_,
         TRIR_,
         firstAid_,
@@ -70,7 +66,7 @@ class SafetyController{
 
         const modifiedDate_ = moment().format('YYYY-MM-DD HH:ss:mm');
         
-        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryUpdate] :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :tier, :larOverall, :larHumacao, :larWarsaw, :fpy25, :fly65, :NCROpen',
+        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryUpdate] :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :larOverall, :larHumacao, :larWarsaw, :fpy25, :fly65, :NCROpen',
         {replacements: {
             idEntry: idEntry_,
             fiscalYear: fiscalYear_, 
@@ -81,8 +77,7 @@ class SafetyController{
 
             createdDate: createdDate_, 
             modifiedDate: modifiedDate_, 
-            
-            tier: tier_, 
+
             HOs: HOs_,
             TRIR: TRIR_,
             firstAid: firstAid_,

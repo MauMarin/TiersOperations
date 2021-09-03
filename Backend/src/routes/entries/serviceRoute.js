@@ -21,10 +21,10 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, tier, op20, op40, op60, op65, op70, intervention, OEE} = req.body.tier;
-    //const {reportDate, createdBy, tier, op20, op40, op60, op65, op70, intervention, OEE} = req.body;
+    const {reportDate, createdBy, op20, op40, op60, op65, op70, intervention, OEE} = req.body.createdBy;
+    //const {reportDate, createdBy, op20, op40, op60, op65, op70, intervention, OEE} = req.body;
     try{
-        controller.insertServiceEntry(reportDate, createdBy, tier, op20, op40, op60, op65, op70, intervention, OEE)
+        controller.insertServiceEntry(reportDate, createdBy, op20, op40, op60, op65, op70, intervention, OEE)
         .then(() => {
             return res.json({success: true, message: 'Entry has succesfully been submitted'});
         })
@@ -47,7 +47,6 @@ router.post('/update', (req, res) => {
         modifiedBy,
         createdDate,
         //modifiedDate,
-        tier,
         op20,
         op40,
         op60,
@@ -66,7 +65,6 @@ router.post('/update', (req, res) => {
             modifiedBy,
             createdDate,
             //modifiedDate,
-            tier,
             op20,
             op40,
             op60,
@@ -104,9 +102,8 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/allEntries', (req, res) => {
-    const {tier} = req.body;
     try{
-        controller.getAllServiceEntries(tier)
+        controller.getAllServiceEntries()
         .then(response => {
             const entry = response;
             res.json(entry[0]);

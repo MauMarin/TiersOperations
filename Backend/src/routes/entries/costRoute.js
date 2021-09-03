@@ -22,11 +22,11 @@ router.get('/select', (req, res) => {
 
 router.post('/insert', (req, res) => {
     //const {reportDate, createdBy, tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body;
-    console.log(req.body.tier);
-    const {reportDate, createdBy, tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body.tier;
+    //console.log(req.body);
+    const {reportDate, createdBy, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body.createdBy;
 
     try{
-        controller.insertCostEntry(reportDate, createdBy, tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate)
+        controller.insertCostEntry(reportDate, createdBy, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate)
         .then(() => {
             return res.json({success: true, message: 'Entry has succesfully been submitted'});
         })
@@ -48,7 +48,6 @@ router.post('/update', (req, res) => {
         modifiedBy,
         createdDate,
         //modifiedDate,
-        tier,
         scrap,
         conversionLoss,
         toolConsumption,
@@ -66,7 +65,6 @@ router.post('/update', (req, res) => {
             modifiedBy,
             createdDate,
             //modifiedDate,
-            tier,
             scrap,
             conversionLoss,
             toolConsumption,
@@ -103,9 +101,8 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/allEntries', (req, res) => {
-    const {tier} = req.body;
     try{
-        controller.getAllCostEntries(tier)
+        controller.getAllCostEntries()
         .then(response => {
             const entry = response;
             res.json(entry[0]);

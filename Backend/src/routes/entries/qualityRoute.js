@@ -21,10 +21,10 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, tier, larOverall, larHumacao, larWarsaw, fpy25, fly65, NCROpen} = req.body.tier;
-    //const {reportDate, createdBy, tier, larOverall, larHumacao, larWarsaw, fpy25, fly65, NCROpen} = req.body;
+    const {reportDate, createdBy, larOverall, larHumacao, larWarsaw, fly65, NCROpen} = req.body.createdBy;
+    //const {reportDate, createdBy, tier, larOverall, larHumacao, larWarsaw, fly65, NCROpen} = req.body;
     try{
-        controller.insertQualityEntry(reportDate, createdBy, tier, larOverall, larHumacao, larWarsaw, fpy25, fly65, NCROpen)
+        controller.insertQualityEntry(reportDate, createdBy, larOverall, larHumacao, larWarsaw, fly65, NCROpen)
         .then(() => {
             return res.json({success: true, message: 'Entry has succesfully been submitted'});
         })
@@ -47,11 +47,10 @@ router.post('/update', (req, res) => {
         modifiedBy,
         createdDate,
         //modifiedDate,
-        tier,
+
         larOverall,
         larHumacao,
         larWarsaw,
-        fpy25,
         fly65,
         NCROpen
     } = req.body;
@@ -65,11 +64,9 @@ router.post('/update', (req, res) => {
             modifiedBy,
             createdDate,
             //modifiedDate,
-            tier,
             larOverall,
             larHumacao,
             larWarsaw,
-            fpy25,
             fly65,
             NCROpen
         )
@@ -102,9 +99,8 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/allEntries', (req, res) => {
-    const {tier} = req.body;
     try{
-        controller.getAllQualityEntries(tier)
+        controller.getAllQualityEntries()
         .then(response => {
             const entry = response;
             res.json(entry[0]);

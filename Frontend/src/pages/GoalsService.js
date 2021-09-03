@@ -28,7 +28,7 @@ export default function CostEntryList(props) {
   return (
     <>
       <Helmet>
-        <title>Entries</title>
+        <title>Service Goals</title>
       </Helmet>
 
       <Box

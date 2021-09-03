@@ -24,44 +24,38 @@ const EntryForm = (props) => {
     return (
         <Formik
             initialValues={{
-                tier: '',
                 createdBy: '',
                 reportDate: '',
                 larOverall: '',
                 larHumacao: '',
                 larWarsaw: '',
-                fpy25: '',
                 fly65: '',
                 NCROpen: ''
 
             }}
             validationSchema={Yup.object().shape({
-                tier: Yup.number().required('Tier is required'),
                 createdBy: Yup.number().required('userID is required'),
                 reportDate: Yup.string().required('Report date is required'),
                 larOverall: Yup.number().required('Scrap is required'),
                 larWarsaw: Yup.number().required('Conversion loss is required'),
                 larHumacao: Yup.number().required('Tool consumption is required'),
-                fpy25: Yup.number().required('Tool consumption is required'),
                 fly65: Yup.number().required('Tool consumption is required'),
                 NCROpen: Yup.number().required('Tool consumption is required')
             })}
 
             //initial call to backend
-            onSubmit={(tier, createdBy, reportDate, larOverall, larHumacao, larWarsaw, fpy25, fly65, NCROpen) => {
+            onSubmit={(createdBy, reportDate, larOverall, larHumacao, larWarsaw, fly65, NCROpen) => {
 
             axios({
                 method: 'post',
                 url: 'http://localhost:8080/api/entries/quality/insert',
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
-                    tier: tier,
                     createdBy: createdBy, 
                     reportDate: reportDate,
                     larOverall: larOverall, 
                     larHumacao: larHumacao,
                     larWarsaw: larWarsaw,
-                    fpy25: fpy25,
                     fly65: fly65,
                     NCROpen: NCROpen
                 }
@@ -98,22 +92,6 @@ const EntryForm = (props) => {
                                 container
                                 spacing={3}
                             >
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="Tier"
-                                        name="tier"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.tier}
-                                        variant="outlined"
-                                    />
-                                </Grid>
                                 <Grid
                                     item
                                     md={6}
@@ -193,22 +171,7 @@ const EntryForm = (props) => {
                                         variant="outlined"
                                     />
                                 </Grid>
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="FPY OP 25"
-                                        name="fpy25"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.fpy25}
-                                        variant="outlined"
-                                    />
-                                </Grid>
+                                
                                 <Grid
                                     item
                                     md={6}

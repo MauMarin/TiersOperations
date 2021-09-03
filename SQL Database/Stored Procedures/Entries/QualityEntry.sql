@@ -36,13 +36,11 @@ CREATE PROC [dbo].[usp_QualityEntryInsert]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> Cost variables
     @larOverall float,
     @larHumacao float,
     @larWarsaw float,
-    @fpy25 float,
     @fly65 float,
     @NCROpen int
 AS 
@@ -51,13 +49,13 @@ AS
 	
 	BEGIN TRAN
 
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
 	
-	INSERT INTO [dbo].[QualityEntry] ([larOverall], [larHumacao], [larWarsaw], [fpy25], [fly65], [NCROpen], [entry])
-	SELECT @larOverall, @larHumacao, @larWarsaw, @fpy25, @fly65, @NCROpen, @@IDENTITY
+	INSERT INTO [dbo].[QualityEntry] ([larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [entry])
+	SELECT @larOverall, @larHumacao, @larWarsaw, @fly65, @NCROpen, @@IDENTITY
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fpy25], [fly65], [NCROpen], [entry]
+	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [entry]
 	FROM   [dbo].[QualityEntry]
 	WHERE  [id] = SCOPE_IDENTITY()
 	-- End Return Select <- do not remove
@@ -81,13 +79,11 @@ CREATE PROC [dbo].[usp_QualityEntryUpdate]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> Cost variables
     @larOverall float,
     @larHumacao float,
     @larWarsaw float,
-    @fpy25 float,
     @fly65 float,
     @NCROpen int
 AS 
@@ -97,13 +93,13 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[QualityEntry]
-	SET    [larOverall] = @larOverall, [larHumacao] = @larHumacao, [larWarsaw] = @larWarsaw, [fpy25] = @fpy25, [fly65] = @fly65, [NCROpen] = @NCROpen, [entry] = @idEntry
+	SET    [larOverall] = @larOverall, [larHumacao] = @larHumacao, [larWarsaw] = @larWarsaw, [fly65] = @fly65, [NCROpen] = @NCROpen, [entry] = @idEntry
 	WHERE  [entry] = @idEntry
 
-	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fpy25], [fly65], [NCROpen], [entry]
+	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [entry]
 	FROM   [dbo].[QualityEntry]
 	WHERE  [entry] = @@IDENTITY	
 	-- End Return Select <- do not remove
@@ -140,17 +136,16 @@ BEGIN
 END 
 GO
 CREATE PROC [dbo].[usp_EntriesByQuality]  
-    @tier int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.id, e.fiscalYear, e.fiscalMonth, e.reportDate, u.name as createdBy, u2.name as modifiedBy, e.createdDate, e.modifiedDate, c.* from Entry e
     inner join QualityEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
-	where e.tier = @tier
+    inner join Users u2 on e.modifiedBy = u2.id
 
 	COMMIT
 GO

@@ -20,7 +20,7 @@ class QualityController{
         return Goal;
     }
 
-    async insertQualityGoal(depID_, larOverall_, larHumacao_, larWarsaw_, fpy25_, fly65_, NCROpen_){
+    async insertQualityGoal(depID_, larOverall_, larHumacao_, larWarsaw_, fly65_, NCROpen_){
 
         //console.log(_reportDate, _createdBy, _tier, _scrap, _conversionLoss, _toolConsumption, _toolRate, _earnHours, _energyRate)
 
@@ -32,7 +32,7 @@ class QualityController{
         const fiscalMonth_ = fiscal.getMonth(month);
         const monthly_ = true;
 
-        await connection.sequelize.query('EXEC [dbo].[usp_QualityGoalInsert] :depID, :fiscalYear, :fiscalMonth, :monthly, :larOverall, :larHumacao, :larWarsaw, :fpy25, :fly65, :NCROpen',
+        await connection.sequelize.query('EXEC [dbo].[usp_QualityGoalInsert] :depID, :fiscalYear, :fiscalMonth, :monthly, :larOverall, :larHumacao, :larWarsaw, :fly65, :NCROpen',
         {replacements:{
             depID: depID_,
             fiscalYear: fiscalYear_, 
@@ -42,7 +42,6 @@ class QualityController{
             larOverall: larOverall_,
             larHumacao: larHumacao_,
             larWarsaw: larWarsaw_,
-            fpy25: fpy25_,
             fly65: fly65_,
             NCROpen: NCROpen_
         }});
@@ -55,10 +54,10 @@ class QualityController{
         fiscalMonth_,
         monthly_,
         
-        larOverall_, larHumacao_, larWarsaw_, fpy25_, fly65_, NCROpen_){
+        larOverall_, larHumacao_, larWarsaw_, fly65_, NCROpen_){
 
         
-        await connection.sequelize.query('EXEC [dbo].[usp_QualityGoalUpdate] :idGoal, :depID, :fiscalYear, :fiscalMonth, :monthly, :larOverall, :larHumacao, :larWarsaw, :fpy25, :fly65, :NCROpen',
+        await connection.sequelize.query('EXEC [dbo].[usp_QualityGoalUpdate] :idGoal, :depID, :fiscalYear, :fiscalMonth, :monthly, :larOverall, :larHumacao, :larWarsaw, :fly65, :NCROpen',
         {replacements: {
             idGoal: idGoal_,
             depID: depID_,
@@ -69,7 +68,6 @@ class QualityController{
             larOverall: larOverall_,
             larHumacao: larHumacao_,
             larWarsaw: larWarsaw_,
-            fpy25: fpy25_,
             fly65: fly65_,
             NCROpen: NCROpen_
         }});

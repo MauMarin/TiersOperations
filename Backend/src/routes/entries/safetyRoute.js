@@ -21,10 +21,10 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, tier, HOs, TRIR, firstAid, nearMiss} = req.body.tier;
+    const {reportDate, createdBy, HOs, TRIR, firstAid, nearMiss} = req.body.createdBy;
     //const {reportDate, createdBy, tier, HOs, TRIR, firstAid, nearMiss} = req.body;
     try{
-        controller.insertSafetyEntry(reportDate, createdBy, tier, HOs, TRIR, firstAid, nearMiss)
+        controller.insertSafetyEntry(reportDate, createdBy, HOs, TRIR, firstAid, nearMiss)
         .then(() => {
             return res.json({success: true, message: 'Entry has succesfully been submitted'});
         })
@@ -47,7 +47,6 @@ router.post('/update', (req, res) => {
         modifiedBy,
         createdDate,
         //modifiedDate,
-        tier,
         HOs,
         TRIR,
         firstAid,
@@ -63,7 +62,6 @@ router.post('/update', (req, res) => {
             modifiedBy,
             createdDate,
             //modifiedDate,
-            tier,
             HOs,
             TRIR,
             firstAid,
@@ -98,9 +96,8 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/allEntries', (req, res) => {
-    const {tier} = req.body;
     try{
-        controller.getAllSafetyEntries(tier)
+        controller.getAllSafetyEntries()
         .then(response => {
             const entry = response;
             res.json(entry[0]);

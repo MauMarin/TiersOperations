@@ -36,7 +36,6 @@ CREATE PROC [dbo].[usp_OpExEntryInsert]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> OpEx variables
     @evaluation6S int,
@@ -48,7 +47,7 @@ AS
 	
 	BEGIN TRAN
 
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
 	
 	INSERT INTO [dbo].[OpExEntry] ([evaluation6S], [trainingOnTime], [completedOnTime], [entry])
 	SELECT @evaluation6S, @trainingOnTime, @completedOnTime, @@IDENTITY
@@ -78,7 +77,6 @@ CREATE PROC [dbo].[usp_OpExEntryUpdate]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> OpEx variables
     @evaluation6S int,
@@ -94,7 +92,7 @@ AS
 	SET    [evaluation6S] = @evaluation6S, [trainingOnTime] = @trainingOnTime, [completedOnTime] = @completedOnTime, [entry] = @idEntry
 	WHERE  [entry] = @idEntry
 
-	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
 	
 	-- Begin Return Select <- do not remove
 	SELECT [id], [evaluation6S], [trainingOnTime], [completedOnTime], [entry]
@@ -134,17 +132,16 @@ BEGIN
 END 
 GO
 CREATE PROC [dbo].[usp_EntriesByOpex]  
-    @tier int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.id, e.fiscalYear, e.fiscalMonth, e.reportDate, u.name as createdBy, u2.name as modifiedBy, e.createdDate, e.modifiedDate, c.* from Entry e
     inner join OpExEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
-	where e.tier = @tier
+    inner join Users u2 on e.modifiedBy = u2.id
 
 	COMMIT
 GO

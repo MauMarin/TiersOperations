@@ -35,7 +35,6 @@ CREATE PROC [dbo].[usp_CostEntryInsert]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> Cost variables
     @scrap float,
@@ -50,7 +49,7 @@ AS
 	
 	BEGIN TRAN
 	
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
 	
 	INSERT INTO [dbo].[CostEntry] ([scrap], [conversionLoss], [toolConsumption], [toolRate], [earnHours], [energyRate], [entry])
 	SELECT @scrap, @conversionLoss, @toolConsumption, @toolRate, @earnHours, @energyRate, @@IDENTITY
@@ -80,7 +79,6 @@ CREATE PROC [dbo].[usp_CostEntryUpdate]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> Cost variables
     @scrap float,
@@ -99,7 +97,7 @@ AS
 	SET    [scrap] = @scrap, [conversionLoss] = @conversionLoss, [toolConsumption] = @toolConsumption, [toolRate] = @toolRate, [earnHours] = @earnHours, [energyRate] = @energyRate, [entry] = @idEntry
 	WHERE  [entry] = @idEntry
 
-	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
 	
 	-- Begin Return Select <- do not remove
 	SELECT [id], [scrap], [conversionLoss], [toolConsumption], [toolRate], [earnHours], [energyRate], [entry]
@@ -139,17 +137,16 @@ BEGIN
 END 
 GO
 CREATE PROC [dbo].[usp_EntriesByCost]  
-    @tier int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.id, e.fiscalYear, e.fiscalMonth, e.reportDate, u.name as createdBy, u2.name as modifiedBy, e.createdDate, e.modifiedDate, c.* from Entry e
     inner join CostEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
-	where e.tier = @tier
+    inner join Users u2 on e.modifiedBy = u2.id
 
 	COMMIT
 GO

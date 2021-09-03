@@ -38,7 +38,6 @@ CREATE PROC [dbo].[usp_QualityGoalInsert]
 	@larOverall float,
     @larHumacao float,
     @larWarsaw float,
-    @fpy25 int,
     @fly65 float,
     @NCROpen int
 AS 
@@ -49,11 +48,11 @@ AS
 
 	exec usp_GoalsInsert @depID, @fiscalYear, @fiscalMonth, @monthly
 	
-	INSERT INTO [dbo].[QualityGoal] ([larOverall], [larHumacao], [larWarsaw], [fpy25], [fly65], [NCROpen], [goalID])
-	SELECT @larOverall, @larHumacao, @larWarsaw, @fpy25, @fly65, @NCROpen, @@IDENTITY
+	INSERT INTO [dbo].[QualityGoal] ([larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [goalID])
+	SELECT @larOverall, @larHumacao, @larWarsaw, @fly65, @NCROpen, @@IDENTITY
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fpy25], [fly65], [NCROpen], [goalID]
+	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [goalID]
 	FROM   [dbo].[QualityGoal]
 	WHERE  [id] = SCOPE_IDENTITY()
 	-- End Return Select <- do not remove
@@ -79,7 +78,6 @@ CREATE PROC [dbo].[usp_QualityGoalUpdate]
     @larOverall float,
     @larHumacao float,
     @larWarsaw float,
-    @fpy25 int,
     @fly65 float,
     @NCROpen int
 AS 
@@ -89,13 +87,13 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[QualityGoal]
-	SET    [larOverall] = @larOverall, [larHumacao] = @larHumacao, [larWarsaw] = @larWarsaw, [fpy25] = @fpy25, [fly65] = @fly65, [NCROpen] = @NCROpen, [goalID] = @idGoal
+	SET    [larOverall] = @larOverall, [larHumacao] = @larHumacao, [larWarsaw] = @larWarsaw, [fly65] = @fly65, [NCROpen] = @NCROpen, [goalID] = @idGoal
 	WHERE  [goalID] = @idGoal
 
 	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth, @monthly
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fpy25], [fly65], [NCROpen], [goalID]
+	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [goalID]
 	FROM   [dbo].[QualityGoal]
 	WHERE  [id] = @@IDENTITY
 	-- End Return Select <- do not remove

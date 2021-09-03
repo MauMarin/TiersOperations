@@ -36,7 +36,6 @@ CREATE PROC [dbo].[usp_SafetyEntryInsert]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> Safety variables
     @HOs int,
@@ -49,7 +48,7 @@ AS
 	
 	BEGIN TRAN
 
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
 	
 	INSERT INTO [dbo].[SafetyEntry] ([HOs], [TRIR], [firstAid], [nearMiss], [entry])
 	SELECT @HOs, @TRIR, @firstAid, @nearMiss, @@IDENTITY
@@ -79,7 +78,6 @@ CREATE PROC [dbo].[usp_SafetyEntryUpdate]
     @modifiedBy int,
     @createdDate datetime,
     @modifiedDate datetime,
-    @tier int,
 
 	--> Safety variables
     @HOs int,
@@ -96,7 +94,7 @@ AS
 	SET    [HOs] = @HOs, [TRIR] = @TRIR, [firstAid] = @firstAid, [nearMiss] = @nearMiss, [entry] = @idEntry
 	WHERE  [entry] = @idEntry
 
-	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
 	
 	-- Begin Return Select <- do not remove
 	SELECT [id], [HOs], [TRIR], [firstAid], [nearMiss], [entry]
@@ -136,17 +134,16 @@ BEGIN
 END 
 GO
 CREATE PROC [dbo].[usp_EntriesBySafety]  
-    @tier int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.id, e.fiscalYear, e.fiscalMonth, e.reportDate, u.name as createdBy, u2.name as modifiedBy, e.createdDate, e.modifiedDate, c.* from Entry e
     inner join SafetyEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
-	where e.tier = @tier
+    inner join Users u2 on e.modifiedBy = u2.id
 
 	COMMIT
 GO

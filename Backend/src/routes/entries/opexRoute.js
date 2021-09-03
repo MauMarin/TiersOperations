@@ -21,10 +21,11 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, tier, evaluation6S, trainingOnTime, completedOnTime} = req.body.tier;
+    
+    const {reportDate, createdBy, evaluation6S, trainingOnTime, completedOnTime} = req.body.createdBy;
     //const {reportDate, createdBy, tier, evaluation6S, trainingOnTime, completedOnTime} = req.body;
     try{
-        controller.insertOpexEntry(reportDate, createdBy, tier, evaluation6S, trainingOnTime, completedOnTime)
+        controller.insertOpexEntry(reportDate, createdBy, evaluation6S, trainingOnTime, completedOnTime)
         .then(() => {
             return res.json({success: true, message: 'Entry has succesfully been submitted'});
         })
@@ -47,7 +48,7 @@ router.post('/update', (req, res) => {
         modifiedBy,
         createdDate,
         //modifiedDate,
-        tier,
+
         evaluation6S,
         trainingOnTime,
         completedOnTime
@@ -62,7 +63,7 @@ router.post('/update', (req, res) => {
             modifiedBy,
             createdDate,
             //modifiedDate,
-            tier,
+
             evaluation6S,
             trainingOnTime,
             completedOnTime
@@ -96,9 +97,8 @@ router.post('/delete', (req, res) => {
 })
 
 router.post('/allEntries', (req, res) => {
-    const {tier} = req.body;
     try{
-        controller.getAllOpexEntries(tier)
+        controller.getAllOpexEntries()
         .then(response => {
             const entry = response;
             res.json(entry[0]);

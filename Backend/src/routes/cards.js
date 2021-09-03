@@ -7,10 +7,10 @@ const router = express.Router();
 var controller = new CardController();
 
 router.post('/insert', (req, res) => {
-    const {status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, currID, tier} = req.body;
-
+    const {status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, currID, tier} = req.body;
+    
     try{
-        controller.insertCard(status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, currID, tier)
+        controller.insertCard(status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, currID, tier)
         .then(() => {
             return res.json({success: true, message: 'Entry has succesfully been submitted'});
         })

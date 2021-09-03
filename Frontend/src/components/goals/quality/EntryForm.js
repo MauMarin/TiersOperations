@@ -27,7 +27,6 @@ const EntryForm = (props) => {
                 larOverall: '',
                 larHumacao: '',
                 larWarsaw: '',
-                fpy25: '',
                 fly65: '',
                 NCROpen: ''
 
@@ -36,13 +35,12 @@ const EntryForm = (props) => {
                 larOverall: Yup.number().required('Scrap is required'),
                 larWarsaw: Yup.number().required('Conversion loss is required'),
                 larHumacao: Yup.number().required('Tool consumption is required'),
-                fpy25: Yup.number().required('Tool consumption is required'),
                 fly65: Yup.number().required('Tool consumption is required'),
                 NCROpen: Yup.number().required('Tool consumption is required')
             })}
 
             //initial call to backend
-            onSubmit={(larOverall, larHumacao, larWarsaw, fpy25, fly65, NCROpen) => {
+            onSubmit={(larOverall, larHumacao, larWarsaw, fly65, NCROpen) => {
 
             axios({
                 method: 'post',
@@ -53,7 +51,6 @@ const EntryForm = (props) => {
                     larOverall: larOverall, 
                     larHumacao: larHumacao,
                     larWarsaw: larWarsaw,
-                    fpy25: fpy25,
                     fly65: fly65,
                     NCROpen: NCROpen
                 }
@@ -138,22 +135,7 @@ const EntryForm = (props) => {
                                         variant="outlined"
                                     />
                                 </Grid>
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="FPY OP 25"
-                                        name="fpy25"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.fpy25}
-                                        variant="outlined"
-                                    />
-                                </Grid>
+                                
                                 <Grid
                                     item
                                     md={6}

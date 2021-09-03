@@ -22,12 +22,12 @@ router.get('/select', (req, res) => {
 
 router.post('/insert', (req, res) => {
     const {depID} = req.body;
-    const {larOverall, larHumacao, larWarsaw, fpy25, fly65, NCROpen} = req.body.larOverall;
+    const {larOverall, larHumacao, larWarsaw, fly65, NCROpen} = req.body.larOverall;
     //console.log(req.body.tier);
     //const {reportDate, createdBy, tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body.tier;
 
     try{
-        controller.insertQualityGoal(depID, larOverall, larHumacao, larWarsaw, fpy25, fly65, NCROpen)
+        controller.insertQualityGoal(depID, larOverall, larHumacao, larWarsaw, fly65, NCROpen)
         .then(() => {
             return res.json({success: true, message: 'Goal has succesfully been submitted'});
         })
