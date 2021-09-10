@@ -489,7 +489,7 @@ AS
 
 	BEGIN TRAN
 
-	SELECT [id], [status], [dueDate], [deparment], [submittedBy], [directedTo], [actionPlan], [createdBy], [modifiedBy], [creationDate], [modifiedDate], [currID], [tier], [description] 
+	SELECT [id], [status], [dueDate], [deparment], [submittedBy], [directedTo], [actionPlan], [createdBy], [modifiedBy], [creationDate], [modifiedDate], [tier], [description] 
 	FROM   [dbo].[Cards] 
 	WHERE  ([id] = @id OR @id IS NULL) 
 
@@ -505,15 +505,12 @@ CREATE PROC [dbo].[usp_CardsInsert]
     @status varchar(10),
     @dueDate date,
     @deparment int,
-    @description varchar(500),
+    @description varchar(1000),
     @submittedBy int,
     @directedTo int,
-    @actionPlan varchar(150) = NULL,
+    @actionPlan varchar(1000) = NULL,
     @createdBy int,
     @modifiedBy int,
-    @creationDate date,
-    @modifiedDate date,
-    @currID int,
     @tier int
 AS 
 	SET NOCOUNT ON 
@@ -521,11 +518,11 @@ AS
 	
 	BEGIN TRAN
 	
-	INSERT INTO [dbo].[Cards] ([status], [dueDate], [deparment], [submittedBy], [directedTo], [actionPlan], [createdBy], [modifiedBy], [creationDate], [modifiedDate], [currID], [tier], [description])
-	SELECT @status, @dueDate, @deparment, @submittedBy, @directedTo, @actionPlan, @createdBy, @modifiedBy, @creationDate, @modifiedDate, @currID, @tier, @description
+	INSERT INTO [dbo].[Cards] ([status], [dueDate], [deparment], [submittedBy], [directedTo], [actionPlan], [createdBy], [modifiedBy], [creationDate], [modifiedDate], [tier], [description])
+	SELECT @status, @dueDate, @deparment, @submittedBy, @directedTo, @actionPlan, @createdBy, @modifiedBy, getdate(), getdate(), @tier, @description
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [status], [dueDate], [deparment], [submittedBy], [directedTo], [actionPlan], [createdBy], [modifiedBy], [creationDate], [modifiedDate], [currID], [tier], [description]
+	SELECT [id], [status], [dueDate], [deparment], [submittedBy], [directedTo], [actionPlan], [createdBy], [modifiedBy], [creationDate], [modifiedDate], [tier], [description]
 	FROM   [dbo].[Cards]
 	WHERE  [id] = SCOPE_IDENTITY()
 	-- End Return Select <- do not remove
@@ -545,14 +542,12 @@ CREATE PROC [dbo].[usp_CardsUpdate]
     @deparment int,
     @submittedBy int,
     @directedTo int,
-    @actionPlan varchar(150) = NULL,
+    @actionPlan varchar(1000) = NULL,
     @createdBy int,
     @modifiedBy int,
     @creationDate date,
-    @modifiedDate date,
-    @currID int,
     @tier int,
-    @description varchar(500)
+    @description varchar(1000)
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -560,11 +555,11 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[Cards]
-	SET    [status] = @status, [dueDate] = @dueDate, [deparment] = @deparment, [submittedBy] = @submittedBy, [directedTo] = @directedTo, [actionPlan] = @actionPlan, [createdBy] = @createdBy, [modifiedBy] = @modifiedBy, [creationDate] = @creationDate, [modifiedDate] = @modifiedDate, [currID] = @currID, [tier] = @tier, [description] = @description
+	SET    [status] = @status, [dueDate] = @dueDate, [deparment] = @deparment, [submittedBy] = @submittedBy, [directedTo] = @directedTo, [actionPlan] = @actionPlan, [createdBy] = @createdBy, [modifiedBy] = @modifiedBy, [creationDate] = @creationDate, [modifiedDate] = getdate(), [tier] = @tier, [description] = @description
 	WHERE  [id] = @id
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [status], [dueDate], [deparment], [submittedBy], [directedTo], [actionPlan], [createdBy], [modifiedBy], [creationDate], [modifiedDate], [currID], [tier], [description]
+	SELECT [id], [status], [dueDate], [deparment], [submittedBy], [directedTo], [actionPlan], [createdBy], [modifiedBy], [creationDate], [modifiedDate], [tier], [description]
 	FROM   [dbo].[Cards]
 	WHERE  [id] = @id	
 	-- End Return Select <- do not remove
@@ -629,7 +624,7 @@ AS
 	BEGIN TRAN
 
 
-	select c.id, c.actionPlan, u1.name as createdBy, c.creationDate, c.currID, d.name as deparment, u2.name as directedTo, c.dueDate, u4.name as modifiedBy, c.modifiedDate, c.status, u3.name as createdBy, c.tier from Cards c
+	select c.id, c.actionPlan, c.description, u1.name as submittedBy, c.creationDate, d.name as deparment, u2.name as directedTo, c.dueDate, u4.name as modifiedBy, c.modifiedDate, c.status, u3.name as createdBy, c.tier from Cards c
 	inner join Users u1 on c.submittedBy = u1.id
 	inner join Users u2 on c.directedTo = u2.id
 	inner join Users u3 on c.createdBy = u3.id

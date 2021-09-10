@@ -21,9 +21,6 @@ class ServiceController{
     }
 
     async insertServiceEntry(reportDate_, createdBy_, op20_, op40_, op60_, op65_, op70_, intervention_, OEE_){
-
-        const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
-        const modifiedDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
         const date = new Date();
         const month = date.getMonth() + 1; 
         const year = date.getFullYear();
@@ -31,16 +28,13 @@ class ServiceController{
         const fiscalYear_ = fiscal.getYear(year, month);
         const fiscalMonth_ = fiscal.getMonth(month);
 
-        await connection.sequelize.query('EXEC [dbo].[usp_ServiceEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :op20, :op40, :op60, :op65, :op70, :intervention, :OEE',
+        await connection.sequelize.query('EXEC [dbo].[usp_ServiceEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :op20, :op40, :op60, :op65, :op70, :intervention, :OEE',
         {replacements:{
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 
             reportDate: reportDate_, 
             createdBy: createdBy_, 
             modifiedBy: createdBy_,
-
-            createdDate: createdDate_, 
-            modifiedDate: modifiedDate_, 
             
             op20: op20_,
             op40: op40_,
@@ -53,6 +47,7 @@ class ServiceController{
     };
 
     async updateServiceEntry(
+        id_,
         idEntry_,
         fiscalYear_,
         fiscalMonth_,
@@ -69,10 +64,10 @@ class ServiceController{
         intervention_,
         OEE_
     ){
-        const modifiedDate_ = moment().format('YYYY-MM-DD HH:ss:mm');
         
-        await connection.sequelize.query('EXEC [dbo].[usp_ServiceEntryUpdate] :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :op20, :op40, :op60, :op65, :op70, :intervention, :OEE',
+        await connection.sequelize.query('EXEC [dbo].[usp_ServiceEntryUpdate] :id, :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :op20, :op40, :op60, :op65, :op70, :intervention, :OEE',
         {replacements: {
+            id: id_,
             idEntry: idEntry_,
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 
@@ -81,7 +76,6 @@ class ServiceController{
             modifiedBy: modifiedBy_,
 
             createdDate: createdDate_, 
-            modifiedDate: modifiedDate_, 
             
             op20: op20_,
             op40: op40_,

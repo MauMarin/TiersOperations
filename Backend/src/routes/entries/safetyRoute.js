@@ -6,7 +6,7 @@ const router = express.Router();
 
 var controller = new SafetyController();
 
-router.get('/select', (req, res) => {
+router.post('/select', (req, res) => {
     const {idEntry} = req.body;
     try{
         controller.readSafetyEntry(idEntry)
@@ -21,7 +21,7 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, HOs, TRIR, firstAid, nearMiss} = req.body.createdBy;
+    const {reportDate, createdBy, HOs, TRIR, firstAid, nearMiss} = req.body.reportDate;
     //const {reportDate, createdBy, tier, HOs, TRIR, firstAid, nearMiss} = req.body;
     try{
         controller.insertSafetyEntry(reportDate, createdBy, HOs, TRIR, firstAid, nearMiss)
@@ -39,7 +39,8 @@ router.post('/insert', (req, res) => {
 
 router.post('/update', (req, res) => {
     const{
-        idEntry,
+        id,
+        entry,
         fiscalYear,
         fiscalMonth,
         reportDate,
@@ -51,10 +52,11 @@ router.post('/update', (req, res) => {
         TRIR,
         firstAid,
         nearMiss
-    } = req.body;
+    } = req.body.reportDate;
 
     try{
-        controller.updateSafetyEntry(idEntry,
+        controller.updateSafetyEntry(id,
+            entry,
             fiscalYear,
             fiscalMonth,
             reportDate,

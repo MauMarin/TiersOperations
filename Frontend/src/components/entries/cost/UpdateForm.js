@@ -17,24 +17,59 @@ import axios from 'axios';
 
 import Cookies from 'universal-cookie';
 
-const EntryForm = (props) => {
+import { useEffect, useState } from 'react';
+
+const EntryForm = ({data}) => {
+
+    const [isLoading, setLoading] = useState(true);
+    const [entry, setEntry] = useState({});
+
+    useEffect(() => {
+        axios({
+            method: 'post',
+            url: 'http://localhost:8080/api/entries/cost/select',
+            headers: {'Content-Type': 'application/json; charset=utf-8'}, 
+            data: {
+                idEntry: data
+            }
+        })
+        .then((response) => {
+            setEntry(response.data.CostEntry)
+            //console.log(response.data.CostEntry)
+            setLoading(false);
+        });
+      }, [data]);
+
+      if (isLoading) {
+        return <div className="App">Loading...</div>;
+      }
 
     const cookie = new Cookies();
-    const { id } = cookie.get('userData');
+    const modifiedBy = cookie.get('userData').id;
 
     return (
         <Formik
             initialValues={{
-                createdBy: id,
-                reportDate: '',
-                scrap: '',
-                conversionLoss: '',
-                toolConsumption: '',
-                toolRate: '',
-                earnHours: '',
-                energyRate: '',
+                id: entry.id,
+                entry: entry.entry,
+                fiscalYear: entry.fiscalYear,
+                fiscalMonth: entry.fiscalMonth,
+                reportDate: entry.reportDate,
+                createdBy: entry.createdBy,
+                modifiedBy: modifiedBy,
+                
+                createdDate: entry.createdDateH,
+
+                scrap: entry.scrap,
+                conversionLoss: entry.conversionLoss,
+                toolConsumption: entry.toolConsumption,
+                toolRate: entry.toolRate,
+                earnHours: entry.earnHours,
+                energyRate: entry.energyRate,
             }}
             validationSchema={Yup.object().shape({
+                fiscalYear: Yup.string().required('Fiscal year date is required'),
+                fiscalMonth: Yup.string().required('Fiscal month date is required'),
                 reportDate: Yup.date().required('Report date is required'),
                 scrap: Yup.number().required('Scrap is required'),
                 conversionLoss: Yup.number().required('Conversion loss is required'),
@@ -45,14 +80,15 @@ const EntryForm = (props) => {
             })}
 
             //initial call to backend
-            onSubmit={(reportDate, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate) => {
+            onSubmit={(fiscalMonth, reportDate, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate) => {
 
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/api/entries/cost/insert',
+                url: 'http://localhost:8080/api/entries/cost/update',
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
                     reportDate: reportDate,
+                    fiscalMonth: fiscalMonth,
                     scrap: scrap,
                     conversionLoss: conversionLoss,
                     toolConsumption: toolConsumption,
@@ -100,6 +136,64 @@ const EntryForm = (props) => {
                                 >
 
                                 <TextField
+                                    fullWidth
+                                    label="ID"
+                                    name="id"
+                                    onChange={handleChange}
+                                    required
+                                    disabled={true}
+                                    value={values.id}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+                                
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Fiscal Year"
+                                    name="fiscalYear"
+                                    onChange={handleChange}
+                                    required
+                                    value={values.fiscalYear}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Fiscal Month"
+                                    name="fiscalMonth"
+                                    onChange={handleChange}
+                                    required
+                                    value={values.fiscalMonth}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
                                     type='date'
                                     fullWidth
                                     label="Report Date"
@@ -112,6 +206,47 @@ const EntryForm = (props) => {
                                 />
 
                                 </Grid>
+
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Created By"
+                                    name="createdBy"
+                                    onChange={handleChange}
+                                    disabled={true}
+                                    required
+                                    value={values.createdBy}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Created Date"
+                                    name="createdDate"
+                                    onChange={handleChange}
+                                    disabled={true}
+                                    required
+                                    value={values.createdDate}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+
                                 <Grid
                                     item
                                     md={6}
@@ -229,7 +364,7 @@ const EntryForm = (props) => {
                                 type="submit"
                                 variant="contained"
                             >
-                                Submit new entry
+                                Update
                             </Button>
                         </Box>
                     </Card>

@@ -2,10 +2,6 @@
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
-// import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
-// import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
-// import DatePicker from '@material-ui/lab/DatePicker';
-
 import {
     Box,
     Button,
@@ -21,37 +17,73 @@ import axios from 'axios';
 
 import Cookies from 'universal-cookie';
 
-const EntryForm = (props) => {
+import { useEffect, useState } from 'react';
+
+const EntryForm = ({data}) => {
+
+    const [isLoading, setLoading] = useState(true);
+    const [entry, setEntry] = useState({});
+
+    useEffect(() => {
+        axios({
+            method: 'post',
+            url: 'http://localhost:8080/api/entries/opex/select',
+            headers: {'Content-Type': 'application/json; charset=utf-8'}, 
+            data: {
+                idEntry: data
+            }
+        })
+        .then((response) => {
+            console.log(response.data.OpexEntry)
+            setEntry(response.data.OpexEntry)
+            setLoading(false);
+        });
+      }, [data]);
+
+      if (isLoading) {
+        return <div className="App">Loading...</div>;
+      }
 
     const cookie = new Cookies();
-    const { id } = cookie.get('userData');
+    const modifiedBy = cookie.get('userData').id;
 
     return (
         <Formik
             initialValues={{
-                createdBy: id,
-                reportDate: '',
-                evaluation6S: '',
-                trainingOnTime: '',
-                completedOnTime: ''
+                id: entry.id,
+                entry: entry.entry,
+                fiscalYear: entry.fiscalYear,
+                fiscalMonth: entry.fiscalMonth,
+                reportDate: entry.reportDate,
+                createdBy: entry.createdBy,
+                modifiedBy: modifiedBy,
+                
+                createdDate: entry.createdDateH,
+
+                evaluation6S: entry.evaluation6S,
+                trainingOnTime: entry.trainingOnTime,
+                completedOnTime: entry.completedOnTime
             }}
             validationSchema={Yup.object().shape({
-                createdBy: Yup.number().required('userID is required'),
+                fiscalYear: Yup.string().required('Fiscal year date is required'),
+                fiscalMonth: Yup.string().required('Fiscal month date is required'),
                 reportDate: Yup.date().required('Report date is required'),
+                createdBy: Yup.number().required('userID is required'),
                 evaluation6S: Yup.number().required('Scrap is required'),
                 trainingOnTime: Yup.number().required('Conversion loss is required'),
                 completedOnTime: Yup.number().required('Tool consumption is required')
             })}
 
             //initial call to backend
-            onSubmit={(reportDate, evaluation6S, trainingOnTime, completedOnTime) => {
+            onSubmit={(fiscalMonth, reportDate, evaluation6S, trainingOnTime, completedOnTime) => {
 
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/api/entries/opex/insert',
+                url: 'http://localhost:8080/api/entries/opex/update',
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
                     reportDate: reportDate,
+                    fiscalMonth: fiscalMonth,
                     evaluation6S: evaluation6S,
                     trainingOnTime: trainingOnTime,
                     completedOnTime: completedOnTime
@@ -81,7 +113,7 @@ const EntryForm = (props) => {
                     <Card>
                         <CardHeader
                             subheader="Insert required data"
-                            title="New OpEx Entry"
+                            title="Update OpEx Entry"
                         />
                         <Divider />
                         <CardContent>
@@ -89,6 +121,64 @@ const EntryForm = (props) => {
                                 container
                                 spacing={3}
                             >
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="ID"
+                                    name="id"
+                                    onChange={handleChange}
+                                    required
+                                    disabled={true}
+                                    value={values.id}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+                                
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Fiscal Year"
+                                    name="fiscalYear"
+                                    onChange={handleChange}
+                                    required
+                                    value={values.fiscalYear}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Fiscal Month"
+                                    name="fiscalMonth"
+                                    onChange={handleChange}
+                                    required
+                                    value={values.fiscalMonth}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+
                                 <Grid
                                     item
                                     md={6}
@@ -108,6 +198,47 @@ const EntryForm = (props) => {
                                 />
 
                                 </Grid>
+
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Created By"
+                                    name="createdBy"
+                                    onChange={handleChange}
+                                    disabled={true}
+                                    required
+                                    value={values.createdBy}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Created Date"
+                                    name="createdDate"
+                                    onChange={handleChange}
+                                    disabled={true}
+                                    required
+                                    value={values.createdDate}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+
                                 <Grid
                                     item
                                     md={6}
@@ -157,6 +288,7 @@ const EntryForm = (props) => {
                                     />
                                 </Grid>
 
+
                             </Grid>
                         </CardContent>
                         <Divider />
@@ -175,7 +307,7 @@ const EntryForm = (props) => {
                                 type="submit"
                                 variant="contained"
                             >
-                                Submit new entry
+                                Update
                             </Button>
                         </Box>
                     </Card>

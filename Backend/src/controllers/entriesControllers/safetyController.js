@@ -21,9 +21,6 @@ class SafetyController{
     }
 
     async insertSafetyEntry(reportDate_, createdBy_, HOs_, TRIR_, firstAid_, nearMiss_){
-
-        const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
-        const modifiedDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
         const date = new Date();
         const month = date.getMonth() + 1; 
         const year = date.getFullYear();
@@ -31,16 +28,13 @@ class SafetyController{
         const fiscalYear_ = fiscal.getYear(year, month);
         const fiscalMonth_ = fiscal.getMonth(month);
 
-        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :HOs, :TRIR, :firstAid, :nearMiss',
+        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :HOs, :TRIR, :firstAid, :nearMiss',
         {replacements:{
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 
             reportDate: reportDate_, 
             createdBy: createdBy_, 
             modifiedBy: createdBy_,
-
-            createdDate: createdDate_, 
-            modifiedDate: modifiedDate_, 
             
             HOs: HOs_,
             TRIR: TRIR_,
@@ -50,6 +44,7 @@ class SafetyController{
     };
 
     async updateSafetyEntry(
+        id_,
         idEntry_,
         fiscalYear_,
         fiscalMonth_,
@@ -63,11 +58,10 @@ class SafetyController{
         TRIR_,
         firstAid_,
         nearMiss_){
-
-        const modifiedDate_ = moment().format('YYYY-MM-DD HH:ss:mm');
         
-        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryUpdate] :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :larOverall, :larHumacao, :larWarsaw, :fpy25, :fly65, :NCROpen',
+        await connection.sequelize.query('EXEC [dbo].[usp_SafetyEntryUpdate] :id, :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :HOs, :TRIR, :firstAid, :nearMiss',
         {replacements: {
+            id: id_,
             idEntry: idEntry_,
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 
@@ -76,7 +70,6 @@ class SafetyController{
             modifiedBy: modifiedBy_,
 
             createdDate: createdDate_, 
-            modifiedDate: modifiedDate_, 
 
             HOs: HOs_,
             TRIR: TRIR_,

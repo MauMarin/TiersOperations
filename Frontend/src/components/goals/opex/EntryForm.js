@@ -72,7 +72,7 @@ const EntryForm = (props) => {
                     <Card>
                         <CardHeader
                             subheader="Insert required data"
-                            title="New Cost Entry"
+                            title="New OpEx Goal"
                         />
                         <Divider />
                         <CardContent>

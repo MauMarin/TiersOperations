@@ -1,10 +1,9 @@
 import 'react-perfect-scrollbar/dist/css/styles.css';
-//import { useRoutes } from 'react-router-dom';
 import { useRoutes } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core';
 import GlobalStyles from './components/GlobalStyles';
 import theme from './theme';
-import routes from './routes';
+import routes from './routes/routes';
 
 const App = () => {
   const routing = useRoutes(routes);

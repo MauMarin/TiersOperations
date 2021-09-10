@@ -7,14 +7,9 @@ const moment = require('moment');
 class CardController{
     constructor(){}
 
-    async insertCard(status_, dueDate_, department_, description_, submittedBy_, directedTo_, actionPlan_, createdBy_, currID_, tier_){
+    async insertCard(status_, dueDate_, department_, description_, submittedBy_, directedTo_, actionPlan_, createdBy_, tier_){
 
-        console.log(status_, dueDate_, department_, description_, submittedBy_, directedTo_, actionPlan_, createdBy_, currID_, tier_)
-        
-        const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
-        const modifiedDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
-
-        await connection.sequelize.query('EXEC [dbo].[usp_CardsInsert] :status, :dueDate, :department, :description, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :creationDate, :modifiedDate, :currID, :tier',
+        await connection.sequelize.query('EXEC [dbo].[usp_CardsInsert] :status, :dueDate, :department, :description, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :tier',
         {replacements:{
             status: status_,
             dueDate: dueDate_, 
@@ -25,18 +20,15 @@ class CardController{
             actionPlan: actionPlan_, 
             createdBy: createdBy_, 
             modifiedBy: createdBy_, 
-            creationDate: createdDate_, 
-            modifiedDate: modifiedDate_, 
-            currID: currID_, 
             tier: tier_
         }});
     };
 
-    async updateCard(idCard_, status_, dueDate_, department_, submittedBy_, directedTo_, actionPlan_, createdBy_, modifiedBy_, creationDate_, currID_, tier_){
+    async updateCard(idCard_, status_, dueDate_, department_, submittedBy_, directedTo_, actionPlan_, createdBy_, modifiedBy_, creationDate_, tier_){
 
         const modifiedDate = moment().format('YYYY-MM-DD HH:ss:mm');
         
-        await connection.sequelize.query('EXEC [dbo].[usp_CardsUpdate] :idCard, :status, :dueDate, :department, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :creationDate, :modifiedDate, :currID, :tier',
+        await connection.sequelize.query('EXEC [dbo].[usp_CardsUpdate] :idCard, :status, :dueDate, :department, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :creationDate, :modifiedDate, :tier',
         {replacements: {
             idCard: idCard_,
             status: status_,
@@ -48,8 +40,7 @@ class CardController{
             createdBy: createdBy_, 
             modifiedBy: modifiedBy_, 
             creationDate: creationDate_, 
-            modifiedDate: modifiedDate, 
-            currID: currID_, 
+            modifiedDate: modifiedDate,
             tier: tier_
         }});
 

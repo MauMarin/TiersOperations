@@ -2,10 +2,6 @@
 import * as Yup from 'yup';
 import { Formik } from 'formik';
 
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
-
 import {
     Box,
     Button,
@@ -16,6 +12,9 @@ import {
     Grid,
     TextField
 } from '@material-ui/core';
+
+import Cookies from 'universal-cookie';
+
 
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -56,6 +55,14 @@ const departments = [
         value: 5,
         label: 'Service'
     },
+    {
+        value: 1002,
+        label: 'MFG'
+    },
+    {
+        value: 1003,
+        label: 'ENG'
+    }
 ];
 
 const tiers = [
@@ -80,6 +87,8 @@ const userOptions = [
 
 const EntryForm = (props) => {
 
+    const cookie = new Cookies();
+    const { id } = cookie.get('userData');
 
     const [users, setUsers] = useState({});
 
@@ -110,25 +119,23 @@ const EntryForm = (props) => {
                 submittedBy: '',
                 directedTo: '',
                 actionPlan: '',
-                createdBy: '',
-                tier: '',
-                currID: ''
+                createdBy: id,
+                tier: ''
             }}
             validationSchema={Yup.object().shape({
                 status: Yup.string().required('Status is required'),
-                dueDate: Yup.string().required('Status is required'),
-                department: Yup.string().required('Status is required'),
-                description: Yup.string().required('Status is required'),
-                submittedBy: Yup.string().required('Status is required'),
-                directedTo: Yup.string().required('Status is required'),
-                actionPlan: Yup.string().required('Status is required'),
-                createdBy: Yup.string().required('Status is required'),
-                tier: Yup.string().required('Status is required'),
-                currID: Yup.string().required('Status is required'),
+                dueDate: Yup.date().required('Due date is required'),
+                department: Yup.number().required('Department is required'),
+                description: Yup.string().required('Description is required'),
+                submittedBy: Yup.number().required('Submitted by is required'),
+                directedTo: Yup.number().required('Directed to is required'),
+                actionPlan: Yup.string().required('Action plan is required'),
+                createdBy: Yup.number().required('Created by is required'),
+                tier: Yup.number().required('Tier is required'),
             })}
 
             //initial call to backend
-            onSubmit={(status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, tier, currID) => {
+            onSubmit={(status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, tier) => {
 
                 axios({
                     method: 'post',
@@ -143,13 +150,11 @@ const EntryForm = (props) => {
                         directedTo: directedTo,
                         actionPlan: actionPlan,
                         createdBy: createdBy,
-                        tier: tier,
-                        currID: currID
+                        tier: tier
                     }
                 })
                     .then((response) => {
                         const data = response.data;
-                        console.log(data)
                     }, (error) => {
                         console.log(error);
                     });
@@ -171,7 +176,7 @@ const EntryForm = (props) => {
                     <Card>
                         <CardHeader
                             subheader="Insert required data"
-                            title="New Cost Entry"
+                            title="New Card"
                         />
                         <Divider />
                         <CardContent>
@@ -215,13 +220,13 @@ const EntryForm = (props) => {
                                     <TextField
                                         fullWidth
                                         label="Department"
-                                        name="depID"
+                                        name="department"
                                         onChange={handleChange}
                                         required
                                         select
                                         type="number"
                                         SelectProps={{ native: true }}
-                                        value={values.depID}
+                                        value={values.department}
                                         variant="outlined"
                                     >
                                         {departments.map((option) => (
@@ -321,17 +326,58 @@ const EntryForm = (props) => {
                                     md={6}
                                     xs={12}
                                 >
-                                    <DatePicker
-                                        disableFuture
-                                        label="Responsive"
-                                        openTo="year"
-                                        views={['year', 'month', 'day']}
-                                        value={value}
-                                        onChange={(newValue) => {
-                                            setValue(newValue);
-                                        }}
-                                        renderInput={(params) => <TextField {...params} />}
-                                    />
+
+                                <TextField
+                                    type='date'
+                                    fullWidth
+                                    label="Due date"
+                                    name="dueDate"
+                                    onChange={handleChange}
+                                    required
+                                    value={values.dueDate}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
+                                </Grid>
+
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Description"
+                                    name="description"
+                                    onChange={handleChange}
+                                    required
+                                    multiline
+                                    rows = {10}
+                                    value={values.description}
+                                    variant="outlined"
+                                />
+
+                                </Grid>
+
+                                <Grid
+                                    item
+                                    md={6}
+                                    xs={12}
+                                >
+
+                                <TextField
+                                    fullWidth
+                                    label="Action Plan"
+                                    name="actionPlan"
+                                    onChange={handleChange}
+                                    multiline
+                                    rows = {10}
+                                    value={values.actionPlan}
+                                    variant="outlined"
+                                />
+
                                 </Grid>
 
                             </Grid>

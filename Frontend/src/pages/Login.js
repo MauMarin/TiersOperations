@@ -7,13 +7,40 @@ import {
   Button,
   Container,
   Link,
+  Snackbar,
   TextField,
   Typography
 } from '@material-ui/core';
+
+import {useState} from 'react';
+
+import {
+  Alert,
+  AlertTitle,
+} from '@material-ui/lab';
+
 import axios from 'axios';
 
+import Cookies from 'universal-cookie';
+
 const Login = () => {
+  
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const cookie = new Cookies();
 
   return (
     <>
@@ -46,7 +73,12 @@ const Login = () => {
               .then((response) => {
                 const data = response.data;
                 if(data !== ""){
+                  cookie.set('userData', data, {path: '/'})
                   navigate('/app/home', { replace: true });
+                }
+                else{
+                  console.log("WTF");
+                  handleClick()
                 }
               }, (error) => {
                 console.log(error);
@@ -121,7 +153,6 @@ const Login = () => {
                 <Box sx={{ py: 2 }}>
                   <Button
                     color="primary"
-                    disabled={isSubmitting}
                     fullWidth
                     size="large"
                     type="submit"
@@ -138,8 +169,16 @@ const Login = () => {
                   {' '}
                   <Link
                     component={RouterLink}
-                    to="/register"
+                    to="/app/home"
                     variant="h6"
+                    onClick={ cookie.set('userData',
+                      {
+                        name: "Guest user",
+                        username: "GU",
+                        role: 1,
+                        
+                      }
+                    , {path: '/'})}
                   >
                     View page as guest
                   </Link>
@@ -149,6 +188,13 @@ const Login = () => {
           </Formik>
         </Container>
       </Box>
+
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert severity="info">
+          <AlertTitle>Incorrect Credentials</AlertTitle>
+            Please try again
+          </Alert>
+      </Snackbar>
     </>
   );
 };

@@ -6,7 +6,7 @@ const router = express.Router();
 
 var controller = new OpexController();
 
-router.get('/select', (req, res) => {
+router.post('/select', (req, res) => {
     const {idEntry} = req.body;
     try{
         controller.readOpexEntry(idEntry)
@@ -22,7 +22,7 @@ router.get('/select', (req, res) => {
 
 router.post('/insert', (req, res) => {
     
-    const {reportDate, createdBy, evaluation6S, trainingOnTime, completedOnTime} = req.body.createdBy;
+    const {reportDate, createdBy, evaluation6S, trainingOnTime, completedOnTime} = req.body.reportDate;
     //const {reportDate, createdBy, tier, evaluation6S, trainingOnTime, completedOnTime} = req.body;
     try{
         controller.insertOpexEntry(reportDate, createdBy, evaluation6S, trainingOnTime, completedOnTime)
@@ -39,8 +39,10 @@ router.post('/insert', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
+    //console.log(req.body)
     const{
-        idEntry,
+        id,
+        entry,
         fiscalYear,
         fiscalMonth,
         reportDate,
@@ -52,10 +54,12 @@ router.post('/update', (req, res) => {
         evaluation6S,
         trainingOnTime,
         completedOnTime
-    } = req.body;
+    } = req.body.fiscalMonth;
 
     try{
-        controller.updateOpexEntry(idEntry,
+        controller.updateOpexEntry(
+            id,
+            entry,
             fiscalYear,
             fiscalMonth,
             reportDate,

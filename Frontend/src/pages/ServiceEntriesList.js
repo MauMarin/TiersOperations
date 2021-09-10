@@ -6,6 +6,9 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Popup from '../components/entries/service/Popup'
 
+import Cookies from 'universal-cookie';
+
+var state = true;
 
 export default function ServiceEntriesList(props){
 
@@ -15,9 +18,11 @@ export default function ServiceEntriesList(props){
 
   useEffect(() => {
     axios.post("http://localhost:8080/api/entries/service/allEntries").then(response => {
-        console.log(response.data)
         setEntries(response.data)
       });
+      const cookie = new Cookies();
+    const { role } = cookie.get('userData');
+    if(role > 1) state = false;
     setLoading(false)
   }, []);
 
@@ -50,6 +55,7 @@ export default function ServiceEntriesList(props){
           <Button
             color="primary"
             variant="contained"
+            disabled={state}
             onClick={() => setOpenPopup(true)}
           >
             Add new
@@ -69,6 +75,7 @@ export default function ServiceEntriesList(props){
     <Popup
       openPopup={openPopup}
       setOpenPopup={setOpenPopup}
+      type={1}
     >
 
     </Popup>

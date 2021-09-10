@@ -137,7 +137,8 @@ AS
 
 	BEGIN TRAN
 
-	select u.* from Users u
+	select u.*, r.name as 'RoleName' from Users u
+	inner join Role r on u.role = r.id
 	where u.username = @username
 	AND u.password = @password
 

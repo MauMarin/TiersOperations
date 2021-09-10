@@ -14,9 +14,9 @@ AS
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.*, c.*, convert(varchar(20), e.createdDate, 103) as createdDateH from Entry e
     inner join ServiceEntry c on e.id = c.entry
-    where e.id = @idEntry 
+    where c.id = @idEntry
 
 	COMMIT
 GO
@@ -34,8 +34,6 @@ CREATE PROC [dbo].[usp_ServiceEntryInsert]
     @reportDate date,
     @createdBy int,
     @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
 
 	--> Service variables
 	@op20 int,
@@ -51,7 +49,7 @@ AS
 	
 	BEGIN TRAN
 
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy
 	
 	INSERT INTO [dbo].[ServiceEntry] ([op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [entry])
 	SELECT @op20, @op40, @op60, @op65, @op70, @intervention, @OEE, @@IDENTITY
@@ -73,6 +71,7 @@ END
 GO
 CREATE PROC [dbo].[usp_ServiceEntryUpdate] 
     --> Entry variables
+    @id int,
 	@idEntry int, 
 	@fiscalYear varchar(4),
     @fiscalMonth nchar(10),
@@ -80,7 +79,6 @@ CREATE PROC [dbo].[usp_ServiceEntryUpdate]
     @createdBy int,
     @modifiedBy int,
     @createdDate datetime,
-    @modifiedDate datetime,
 
 	--> Service variables
     @op20 int,
@@ -98,12 +96,14 @@ AS
 
 	UPDATE [dbo].[ServiceEntry]
 	SET    [op20] = @op20, [op40] = @op40, [op60] = @op60, [op65] = @op65, [op70] = @op70, [intervention] = @intervention, [OEE] = @OEE, [entry] = @idEntry
-	WHERE  [entry] = @idEntry
+	WHERE  [id] = @id
+
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [entry]
-	FROM   [dbo].[ServiceEntry]
-	WHERE  [id] = @@IDENTITY	
+	SELECT e.*, c.* from Entry e
+    inner join ServiceEntry c on e.id = c.entry
+	WHERE  c.entry = @idEntry		
 	-- End Return Select <- do not remove
 
 	COMMIT
@@ -144,7 +144,7 @@ AS
 
 	BEGIN TRAN
 
-	select e.id, e.fiscalYear, e.fiscalMonth, e.reportDate, u.name as createdBy, u2.name as modifiedBy, e.createdDate, e.modifiedDate, c.* from Entry e
+	select e.id, e.fiscalYear, e.fiscalMonth, convert(varchar(20), e.reportDate, 101) as reportDate, u.name as createdBy, u2.name as modifiedBy, convert(varchar(20), e.createdDate, 103) as createdDate, convert(varchar(20), e.modifiedDate, 103) as modifiedDate, c.* from Entry e
     inner join ServiceEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
     inner join Users u2 on e.modifiedBy = u2.id

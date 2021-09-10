@@ -1,28 +1,28 @@
 import { Navigate } from 'react-router-dom';
 
-import DashboardLayout from './components/DashboardLayout'
-import DepartmentCards from './pages/EntryDepartmentCards';
+import DashboardLayout from '../components/DashboardLayout'
+import DepartmentCards from '../pages/EntryDepartmentCards';
 
-import CostEntriesList from './pages/CostEntriesList';
-import OpexEntriesList from './pages/OpexEntriesList';
-import QualityEntriesList from './pages/QualityEntriesList';
-import SafetyEntriesList from './pages/SafetyEntriesList';
-import ServiceEntriesList from './pages/ServiceEntriesList';
+import CostEntriesList from '../pages/CostEntriesList';
+import OpexEntriesList from '../pages/OpexEntriesList';
+import QualityEntriesList from '../pages/QualityEntriesList';
+import SafetyEntriesList from '../pages/SafetyEntriesList';
+import ServiceEntriesList from '../pages/ServiceEntriesList';
 
-import GoalsCost from './pages/GoalsCost';
-import GoalsOpex from './pages/GoalsOpex';
-import GoalsQuality from './pages/GoalsQuality';
-import GoalsSafety from './pages/GoalsSafety';
-import GoalsService from './pages/GoalsService';
+import GoalsCost from '../pages/GoalsCost';
+import GoalsOpex from '../pages/GoalsOpex';
+import GoalsQuality from '../pages/GoalsQuality';
+import GoalsSafety from '../pages/GoalsSafety';
+import GoalsService from '../pages/GoalsService';
 
-import Users from './pages/Users'
+import Users from '../pages/Users'
 
-import Cards from './pages/Cards'
+import Cards from '../pages/Cards'
 
-import Home from './pages/Home';
-import MainLayout from './components/MainLayout';
-import NotFound from './pages/NotFound';
-import Login from './pages/Login';
+import Home from '../pages/Home';
+import MainLayout from '../components/MainLayout';
+import NotFound from '../pages/NotFound';
+import Login from '../pages/Login';
 
 const routes = [
     {
@@ -45,10 +45,7 @@ const routes = [
 
         { path: 'users', element: <Users /> },
         { path: 'cards', element: <Cards /> },
-        // { path: 'customers', element: <CustomerList /> },
         { path: 'home', element: <Home /> },
-        // { path: 'products', element: <ProductList /> },
-        // { path: 'settings', element: <Settings /> },
         { path: '*', element: <Navigate to="/404" /> }
       ]
     },

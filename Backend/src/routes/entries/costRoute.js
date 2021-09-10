@@ -6,8 +6,9 @@ const router = express.Router();
 
 var controller = new CostController();
 
-router.get('/select', (req, res) => {
+router.post('/select', (req, res) => {
     const {idEntry} = req.body;
+    
     try{
         controller.readCostEntry(idEntry)
         .then(response => {
@@ -23,7 +24,7 @@ router.get('/select', (req, res) => {
 router.post('/insert', (req, res) => {
     //const {reportDate, createdBy, tier, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body;
     //console.log(req.body);
-    const {reportDate, createdBy, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body.createdBy;
+    const {reportDate, createdBy, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate} = req.body.reportDate;
 
     try{
         controller.insertCostEntry(reportDate, createdBy, scrap, conversionLoss, toolConsumption, toolRate, earnHours, energyRate)
@@ -40,24 +41,26 @@ router.post('/insert', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
-    const{idEntry,
+    console.log(req.body)
+    const{id, 
+        entry,
         fiscalYear,
         fiscalMonth,
         reportDate,
         createdBy,
         modifiedBy,
         createdDate,
-        //modifiedDate,
         scrap,
         conversionLoss,
         toolConsumption,
         toolRate,
         earnHours,
         energyRate
-    } = req.body;
+    } = req.body.fiscalMonth;
 
     try{
-        controller.updateCostEntry(idEntry,
+        controller.updateCostEntry(id,
+            entry,
             fiscalYear,
             fiscalMonth,
             reportDate,
@@ -72,7 +75,7 @@ router.post('/update', (req, res) => {
             earnHours,
             energyRate
         )
-        .then(() => {
+        .then((response) => {
             return res.json({success: true, message: 'Entry has succesfully been updated'});
         })
         .catch(err => {

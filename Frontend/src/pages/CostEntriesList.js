@@ -6,6 +6,9 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import CostPopup from '../components/entries/cost/CostPopup';
 
+import Cookies from 'universal-cookie';
+
+var state = true;
 
 export default function CostEntryList(props) {
 
@@ -18,9 +21,11 @@ export default function CostEntryList(props) {
   useEffect(() => {
     setLoading(false);
     axios.post("http://localhost:8080/api/entries/cost/allEntries").then(response => {
-        console.log(response.data)
         setEntries(response.data)
     });
+    const cookie = new Cookies();
+    const { role } = cookie.get('userData');
+    if(role > 1) state = false;
   }, []);
 
   if (isLoading) {
@@ -51,6 +56,7 @@ export default function CostEntryList(props) {
             <Button
               color="primary"
               variant="contained"
+              disabled={state}
               onClick={() => setOpenPopup(true)}
             >
               Add new
@@ -70,6 +76,7 @@ export default function CostEntryList(props) {
       <CostPopup
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
+        type={1}
       >
 
       </CostPopup>

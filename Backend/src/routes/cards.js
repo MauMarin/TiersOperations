@@ -7,10 +7,11 @@ const router = express.Router();
 var controller = new CardController();
 
 router.post('/insert', (req, res) => {
-    const {status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, currID, tier} = req.body;
+    //const {status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, tier} = req.body;
+    const {status, dueDate, department, description, submittedBy, directedTo, actionPlan, tier, createdBy} = req.body.status;
     
     try{
-        controller.insertCard(status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, currID, tier)
+        controller.insertCard(status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, tier)
         .then(() => {
             return res.json({success: true, message: 'Entry has succesfully been submitted'});
         })
@@ -24,10 +25,10 @@ router.post('/insert', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
-    const{idCard, status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, modifiedBy, creationDate, currID, tier} = req.body;
+    const{idCard, status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, modifiedBy, creationDate, tier} = req.body;
 
     try{
-        controller.updateCard(idCard, status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, modifiedBy, creationDate, currID, tier)
+        controller.updateCard(idCard, status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, modifiedBy, creationDate, tier)
         .then(() => {
             return res.json({success: true, message: 'Entry has succesfully been updated'});
         })

@@ -14,13 +14,13 @@ const columns = [
     field: 'fiscalYear',
     headerName: 'Fiscal Year',
     width: 150,
-    editable: true,
+    sortable: true,
   },
   {
     field: 'fiscalMonth',
     headerName: 'Fiscal Month',
     width: 150,
-    editable: true,
+    sortable: true,
   },
   {
     field: 'eval6S',
@@ -54,7 +54,6 @@ export default function DataGridDemo({ customers, ...rest }) {
               pageSize={8}
               checkboxSelection
               disableSelectionOnClick
-              autoHeight={true}
               autoPageSize={true}
               disableExtendRowFullWidth={true}
             />

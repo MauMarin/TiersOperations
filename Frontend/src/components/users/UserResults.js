@@ -14,19 +14,19 @@ const columns = [
     field: 'name',
     headerName: 'Name',
     width: 150,
-    editable: true,
+    sortable: true,
   },
   {
     field: 'username',
     headerName: 'Username',
     width: 150,
-    editable: true,
+    sortable: true,
   },
   {
     field: 'Department',
     headerName: 'Department',
     width: 150,
-    editable: true,
+    sortable: true,
   },
   {
     field: 'Role',
@@ -49,7 +49,6 @@ export default function DataGridDemo({ customers, ...rest }) {
               pageSize={13}
               checkboxSelection
               disableSelectionOnClick
-              autoHeight={true}
               autoPageSize={true}
               disableExtendRowFullWidth={true}
             />

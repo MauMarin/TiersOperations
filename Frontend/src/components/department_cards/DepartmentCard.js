@@ -33,7 +33,7 @@ const clickHandle = (navigate, product, section) =>{
         navigate('/app/service-entries', { replace: true });
         break;
       default:
-        console.log("(=^w^=)");
+        console.log();
     }
   }
   else{
@@ -54,7 +54,7 @@ const clickHandle = (navigate, product, section) =>{
         navigate('/app/service-goals', { replace: true });
         break;
       default:
-        console.log("(=^w^=)");
+        console.log();
     }
   }
 }

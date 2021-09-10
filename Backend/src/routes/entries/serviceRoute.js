@@ -6,7 +6,7 @@ const router = express.Router();
 
 var controller = new ServiceController();
 
-router.get('/select', (req, res) => {
+router.post('/select', (req, res) => {
     const {idEntry} = req.body;
     try{
         controller.readServiceEntry(idEntry)
@@ -21,7 +21,7 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, op20, op40, op60, op65, op70, intervention, OEE} = req.body.createdBy;
+    const {reportDate, createdBy, op20, op40, op60, op65, op70, intervention, OEE} = req.body.reportDate;
     //const {reportDate, createdBy, op20, op40, op60, op65, op70, intervention, OEE} = req.body;
     try{
         controller.insertServiceEntry(reportDate, createdBy, op20, op40, op60, op65, op70, intervention, OEE)
@@ -39,7 +39,8 @@ router.post('/insert', (req, res) => {
 
 router.post('/update', (req, res) => {
     const{
-        idEntry,
+        id,
+        entry,
         fiscalYear,
         fiscalMonth,
         reportDate,
@@ -54,10 +55,12 @@ router.post('/update', (req, res) => {
         op70,
         intervention,
         OEE
-    } = req.body;
+    } = req.body.reportDate;
 
     try{
-        controller.updateServiceEntry(idEntry,
+        controller.updateServiceEntry(
+            id,
+            entry,
             fiscalYear,
             fiscalMonth,
             reportDate,

@@ -18,13 +18,17 @@ import {
 } from '@material-ui/core';
 
 import axios from 'axios';
+import Cookies from 'universal-cookie';
 
 const EntryForm = (props) => {
+
+    const cookie = new Cookies();
+    const { id } = cookie.get('userData');
 
     return (
         <Formik
             initialValues={{
-                createdBy: '',
+                createdBy: id,
                 reportDate: '',
                 op20: '',
                 op40: '',
@@ -36,7 +40,7 @@ const EntryForm = (props) => {
             }}
             validationSchema={Yup.object().shape({
                 createdBy: Yup.number().required('userID is required'),
-                reportDate: Yup.string().required('Report date is required'),
+                reportDate: Yup.date().required('Report date is required'),
                 op20: Yup.number().required('Scrap is required'),
                 op40: Yup.number().required('Conversion loss is required'),
                 op60: Yup.number().required('Tool consumption is required'),
@@ -47,14 +51,13 @@ const EntryForm = (props) => {
             })}
 
             //initial call to backend
-            onSubmit={(createdBy, reportDate, op20, op40, op60, op65, op70, intervention, OEE) => {
+            onSubmit={(reportDate, op20, op40, op60, op65, op70, intervention, OEE) => {
 
             axios({
                 method: 'post',
                 url: 'http://localhost:8080/api/entries/service/insert',
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
-                    createdBy: createdBy, 
                     reportDate: reportDate,
                     op20: op20,
                     op40: op40,
@@ -89,7 +92,7 @@ const EntryForm = (props) => {
                     <Card>
                         <CardHeader
                             subheader="Insert required data"
-                            title="New Cost Entry"
+                            title="New Service Entry"
                         />
                         <Divider />
                         <CardContent>
@@ -97,36 +100,25 @@ const EntryForm = (props) => {
                                 container
                                 spacing={3}
                             >
+                                
                                 <Grid
                                     item
                                     md={6}
                                     xs={12}
                                 >
-                                    <TextField
-                                        type="number"
-                                        fullWidth
-                                        label="User ID"
-                                        name="createdBy"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.createdBy}
-                                        variant="outlined"
-                                    />
-                                </Grid>
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-                                    <TextField
-                                        fullWidth
-                                        label="Report date"
-                                        name="reportDate"
-                                        onChange={handleChange}
-                                        required
-                                        value={values.reportDate}
-                                        variant="outlined"
-                                    />
+
+                                <TextField
+                                    type='date'
+                                    fullWidth
+                                    label="Report Date"
+                                    name="reportDate"
+                                    onChange={handleChange}
+                                    required
+                                    value={values.reportDate}
+                                    variant="outlined"
+                                    InputLabelProps={{ shrink: true, required: true }}
+                                />
+
                                 </Grid>
                                 <Grid
                                     item

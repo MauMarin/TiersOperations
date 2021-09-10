@@ -16,9 +16,6 @@ class QualityController{
     }
 
     async insertQualityEntry(reportDate_, createdBy_, larOverall_, larHumacao_, larWarsaw_, fly65_, NCROpen_){
-
-        const createdDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
-        const modifiedDate_ = moment().format('YYYY-MM-DD HH:mm:ss');
         const date = new Date();
         const month = date.getMonth() + 1; 
         const year = date.getFullYear();
@@ -26,16 +23,13 @@ class QualityController{
         const fiscalYear_ = fiscal.getYear(year, month);
         const fiscalMonth_ = fiscal.getMonth(month);
 
-        await connection.sequelize.query('EXEC [dbo].[usp_QualityEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :larOverall, :larHumacao, :larWarsaw, :fly65, :NCROpen',
+        await connection.sequelize.query('EXEC [dbo].[usp_QualityEntryInsert] :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :larOverall, :larHumacao, :larWarsaw, :fly65, :NCROpen',
         {replacements:{
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 
             reportDate: reportDate_, 
             createdBy: createdBy_, 
             modifiedBy: createdBy_,
-
-            createdDate: createdDate_, 
-            modifiedDate: modifiedDate_, 
             
             larOverall: larOverall_,
             larHumacao: larHumacao_,
@@ -46,6 +40,7 @@ class QualityController{
     };
 
     async updateQualityEntry(
+        id_,
         idEntry_,
         fiscalYear_,
         fiscalMonth_,
@@ -59,11 +54,10 @@ class QualityController{
         larWarsaw_,
         fly65_,
         NCROpen_){
-
-        const modifiedDate_ = moment().format('YYYY-MM-DD HH:ss:mm');
         
-        await connection.sequelize.query('EXEC [dbo].[usp_QualityEntryUpdate] :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :modifiedDate, :larOverall, :larHumacao, :larWarsaw, :fly65, :NCROpen',
+        await connection.sequelize.query('EXEC [dbo].[usp_QualityEntryUpdate] :id, :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :larOverall, :larHumacao, :larWarsaw, :fly65, :NCROpen',
         {replacements: {
+            id: id_,
             idEntry: idEntry_,
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 
@@ -72,7 +66,6 @@ class QualityController{
             modifiedBy: modifiedBy_,
 
             createdDate: createdDate_, 
-            modifiedDate: modifiedDate_, 
             
             larOverall: larOverall_,
             larHumacao: larHumacao_,

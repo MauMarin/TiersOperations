@@ -6,7 +6,7 @@ const router = express.Router();
 
 var controller = new QualityController();
 
-router.get('/select', (req, res) => {
+router.post('/select', (req, res) => {
     const {idEntry} = req.body;
     try{
         controller.readQualityEntry(idEntry)
@@ -21,7 +21,7 @@ router.get('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    const {reportDate, createdBy, larOverall, larHumacao, larWarsaw, fly65, NCROpen} = req.body.createdBy;
+    const {reportDate, createdBy, larOverall, larHumacao, larWarsaw, fly65, NCROpen} = req.body.reportDate;
     //const {reportDate, createdBy, tier, larOverall, larHumacao, larWarsaw, fly65, NCROpen} = req.body;
     try{
         controller.insertQualityEntry(reportDate, createdBy, larOverall, larHumacao, larWarsaw, fly65, NCROpen)
@@ -38,8 +38,10 @@ router.post('/insert', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
+    //console.log(req.body)
     const{
-        idEntry,
+        id,
+        entry,
         fiscalYear,
         fiscalMonth,
         reportDate,
@@ -53,10 +55,12 @@ router.post('/update', (req, res) => {
         larWarsaw,
         fly65,
         NCROpen
-    } = req.body;
+    } = req.body.reportDate;
 
     try{
-        controller.updateQualityEntry(idEntry,
+        controller.updateQualityEntry(
+            id,
+            entry,
             fiscalYear,
             fiscalMonth,
             reportDate,

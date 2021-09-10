@@ -10,54 +10,70 @@ import {
     List,
     Typography
 } from '@material-ui/core';
+
 import {
     Activity,
     BarChart as BarChartIcon,
     Target,
-    Tool,
     Square,
     Users as UsersIcon,
 } from 'react-feather';
+
 import NavItem from './NavItem';
 
+import Cookies from 'universal-cookie';
+
 const user = {
-    avatar: '/static/images/default_icon.jpg',
-    jobTitle: 'Role',
-    name: 'Name'
+    avatar: '/static/images/default_icon.jpg'
 };
 
-const items = [
-    {
-        href: '/app/cards',
-        icon: Square,
-        title: 'Cards'
-    },
-    {
-        href: '/app/dashboard',
-        icon: BarChartIcon,
-        title: 'Dashboard'
-    },
-    {
-        href: '/app/entries-a',
-        icon: Activity,
-        title: 'Department Entries'
-    },
-    {
-        href: '/app/goals',
-        icon: Target,
-        title: 'Goals'
-    },
-    {
-        href: '/app/roles',
-        icon: Tool,
-        title: 'Roles'
-    },
-    {
-        href: '/app/users',
-        icon: UsersIcon,
-        title: 'Users'
-    },
-];
+const getSection = (role) => {
+    const items = [
+        {
+            href: '/app/cards',
+            icon: Square,
+            title: 'Cards',
+            level: 1
+        },
+        {
+            href: '/app/dashboard',
+            icon: BarChartIcon,
+            title: 'Dashboard',
+            level: 1
+        },
+        {
+            href: '/app/entries-a',
+            icon: Activity,
+            title: 'Department Entries',
+            level: 1
+        },
+        {
+            href: '/app/goals',
+            icon: Target,
+            title: 'Goals',
+            level: 3
+        },
+        {
+            href: '/app/users',
+            icon: UsersIcon,
+            title: 'Users',
+            level: 4
+        },
+    ];
+
+    var temp = [];
+
+    if(role === 4){
+        return items;
+    }
+    else{
+        items.forEach(i => {
+            if( i.level <= role ) temp.push(i);
+        })
+        return temp;
+    }
+
+}
 
 const DashboardSidebar = ({ onMobileClose, openMobile }) => {
     const location = useLocation();
@@ -66,8 +82,13 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
         if (openMobile && onMobileClose) {
             onMobileClose();
         }
-    }, [location.pathname]);
+    }, [location.pathname, onMobileClose, openMobile]);
 
+    const cookie = new Cookies();
+    const { name, RoleName, role } = cookie.get('userData');
+
+    const items = getSection(role)
+    
     const content = (
         <Box
             sx={{
@@ -98,13 +119,13 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
                     color="textPrimary"
                     variant="h5"
                 >
-                    {user.name}
+                    {name}
                 </Typography>
                 <Typography
                     color="textSecondary"
                     variant="body2"
                 >
-                    {user.jobTitle}
+                    {RoleName}
                 </Typography>
             </Box>
             <Divider />

@@ -16,11 +16,8 @@ export default function DepartmentCards({section}) {
   const [isLoading, setLoading] = useState(true);
   const [entries, setEntries] = useState();
 
-  console.log(section);
-
   useEffect(() => {
     axios.get("http://localhost:8080/api/department/allDepartments").then(response => {
-      console.log(response.data)
       setEntries(response.data)
       setLoading(false);
     });

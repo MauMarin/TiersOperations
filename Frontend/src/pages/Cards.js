@@ -22,6 +22,10 @@ import { useState, useEffect } from 'react';
 import CardsDisplay from '../components/cards/CardsDisplay'
 import CostPopup from '../components/cards/Popup';
 
+import Cookies from 'universal-cookie';
+
+var state = true;
+
 export default function CostEntryList(props) {
 
   useEffect(() => {
@@ -33,6 +37,7 @@ export default function CostEntryList(props) {
 
   const [isLoading, setLoading] = useState(true);
   const [entries, setEntries] = useState({});
+  const [color, setColor] = useState();
 
   const [openPopup, setOpenPopup] = useState(false);
 
@@ -42,11 +47,10 @@ export default function CostEntryList(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(value)
     if (value === 'green' || value === 'yellow' || value === 'red') {
       axios.post("http://localhost:8080/api/cards/getByStatus", { "status": value }).then(response => {
-        console.log(response.data)
         setEntries(response.data)
+        setColor(value)
       });
     } else {
       setHelperText('Please select an option.');
@@ -54,6 +58,9 @@ export default function CostEntryList(props) {
   };
 
   useEffect(() => {
+    const cookie = new Cookies();
+    const { role } = cookie.get('userData');
+    if(role > 1) state = false;
     setLoading(false);
   }, []);
 
@@ -73,7 +80,7 @@ export default function CostEntryList(props) {
           py: 3
         }}
       >
-        <Container maxWidth="lg">
+        <Container maxWidth={false}>
 
           <form onSubmit={handleSubmit} {...props}>
             <Card>
@@ -124,15 +131,6 @@ export default function CostEntryList(props) {
               </Box>
             </Card>
           </form>
-
-          {entries.length > 0 ? (
-            <Box sx={{ pt: 3 }}>
-              <CardsDisplay cards={entries}/>
-            </Box>
-          ) : (<Box></Box>)}
-
-          
-
         </Container>
 
         <Box
@@ -153,6 +151,7 @@ export default function CostEntryList(props) {
             <Button
               color="primary"
               variant="contained"
+              disabled={state}
               onClick={() => setOpenPopup(true)}
             >
               Add new
@@ -160,6 +159,12 @@ export default function CostEntryList(props) {
 
 
           </Box>
+
+          {entries.length > 0 ? (
+            <Box sx={{ pt: 3 }}>
+              <CardsDisplay cards={entries} color={color} />
+            </Box>
+          ) : (<Box></Box>)}
 
         </Container>
       </Box>
