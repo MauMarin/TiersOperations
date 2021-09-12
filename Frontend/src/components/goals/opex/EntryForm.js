@@ -19,6 +19,8 @@ import {
 
 import axios from 'axios';
 
+const config = require('../../../config');
+
 const EntryForm = (props) => {
 
     return (
@@ -39,7 +41,7 @@ const EntryForm = (props) => {
 
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/api/goals/opex/insert',
+                url: `http://${config.host}:${config.port}/api/goals/opex/insert`,
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
                     depID: 2,

@@ -23,6 +23,9 @@ import axios from 'axios';
 
 import Cookies from 'universal-cookie';
 
+const config = require('../config');
+
+
 const Login = () => {
   
   const navigate = useNavigate();
@@ -69,7 +72,7 @@ const Login = () => {
 
             //initial call to backend
             onSubmit={(username, password) => {
-              axios.post('http://localhost:8080/api/users/validate', {username, password})
+              axios.post(`http://${config.host}:${config.port}/api/users/validate`, {username, password})
               .then((response) => {
                 const data = response.data;
                 if(data !== ""){

@@ -11,13 +11,15 @@ import {
 } from '@material-ui/core';
 import DepartmentCard from '../components/department_cards/DepartmentCard';
 
+const config = require('../config');
+
 export default function DepartmentCards({section}) {
 
   const [isLoading, setLoading] = useState(true);
   const [entries, setEntries] = useState();
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/department/allDepartments").then(response => {
+    axios.get(`http://${config.host}:${config.port}/api/department/allDepartments`).then(response => {
       setEntries(response.data)
       setLoading(false);
     });

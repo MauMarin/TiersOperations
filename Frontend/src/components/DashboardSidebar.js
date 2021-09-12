@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
-    Avatar,
     Box,
     Divider,
     Drawer,
@@ -23,9 +22,9 @@ import NavItem from './NavItem';
 
 import Cookies from 'universal-cookie';
 
-const user = {
-    avatar: '/static/images/default_icon.jpg'
-};
+// const user = {
+//     avatar: '/static/images/default_icon.jpg'
+// };
 
 const getSection = (role) => {
     const items = [
@@ -105,16 +104,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
                     p: 2
                 }}
             >
-                <Avatar
-                    component={RouterLink}
-                    src={user.avatar}
-                    sx={{
-                        cursor: 'pointer',
-                        width: 64,
-                        height: 64
-                    }}
-                    to="/app/account"
-                />
+                
                 <Typography
                     color="textPrimary"
                     variant="h5"

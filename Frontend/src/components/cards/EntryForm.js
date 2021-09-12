@@ -19,6 +19,8 @@ import Cookies from 'universal-cookie';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const config = require('../../config');
+
 const status = [
     {
         value: '',
@@ -93,7 +95,7 @@ const EntryForm = (props) => {
     const [users, setUsers] = useState({});
 
     useEffect(() => {
-        axios.post("http://localhost:8080/api/users/getAll",).then(response => {
+        axios.post(`http://${config.host}:${config.port}/api/users/getAll`,).then(response => {
             //console.log(response.data)
             setUsers(response.data)
             const u = response.data;
@@ -139,7 +141,7 @@ const EntryForm = (props) => {
 
                 axios({
                     method: 'post',
-                    url: 'http://localhost:8080/api/cards/insert',
+                    url: `http://http://${config.host}:${config.port}/api/cards/insert`,
                     headers: { 'Content-Type': 'application/json; charset=utf-8' },
                     data: {
                         status: status,

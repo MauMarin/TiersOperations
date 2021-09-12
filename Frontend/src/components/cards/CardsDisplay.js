@@ -19,6 +19,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import axios from 'axios';
 
+const config = require('../../config');
+
 const StyledDataGrid = withStyles({
   root: {
     "& .MuiDataGrid-renderingZone": {
@@ -125,7 +127,7 @@ export default function DataGridDemo({ cards, ...rest }) {
 
           axios({
             method: 'post',
-            url: 'http://localhost:8080/api/cards/changeStatus',
+            url: `http://http://${config.host}:${config.port}/api/cards/changeStatus`,
             headers: {'Content-Type': 'application/json; charset=utf-8'}, 
             data: {
                 idCard: id,

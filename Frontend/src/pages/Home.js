@@ -17,7 +17,7 @@ const Home = () => {
           py: 3
         }}
       >
-        Equipo Meraki UwU
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa
       </Box>
     </>
   );

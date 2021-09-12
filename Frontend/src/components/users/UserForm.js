@@ -19,6 +19,8 @@ import {
 
 import axios from 'axios';
 
+const config = require('../../config');
+
 const departments = [
     {
         value: '',
@@ -84,7 +86,7 @@ const EntryForm = (props) => {
 
                 axios({
                     method: 'post',
-                    url: 'http://localhost:8080/api/users/insert',
+                    url: `http://${config.host}:${config.port}/api/users/insert`,
                     headers: { 'Content-Type': 'application/json; charset=utf-8' },
                     data: {
                         name: name,

@@ -21,6 +21,8 @@ import axios from 'axios';
 
 import Cookies from 'universal-cookie';
 
+const config = require('../../../config');
+
 const EntryForm = (props) => {
 
     const cookie = new Cookies();
@@ -48,7 +50,7 @@ const EntryForm = (props) => {
 
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/api/entries/opex/insert',
+                url: `http://${config.host}:${config.port}/api/entries/opex/insert`,
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
                     reportDate: reportDate,

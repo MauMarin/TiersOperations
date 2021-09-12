@@ -16,8 +16,11 @@ import {
     Grid,
     TextField
 } from '@material-ui/core';
-
 import axios from 'axios';
+
+const config = require('../../../config');
+
+
 
 // const week = [
 //     {
@@ -96,7 +99,7 @@ const EntryForm = (props) => {
 
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/api/goals/service/insert',
+                url: `http://${config.host}:${config.port}/api/goals/service/insert`,
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
                     depID: 5,

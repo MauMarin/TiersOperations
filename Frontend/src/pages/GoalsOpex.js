@@ -1,10 +1,12 @@
 import { Helmet } from 'react-helmet';
-import { Box, Button, Container } from '@material-ui/core';
+import { Box, Button, Card, CardHeader, Container } from '@material-ui/core';
 
 import EntryResults from '../components/goals/opex/OpExResults';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import CostPopup from '../components/goals/opex/Popup';
+
+const config = require('../config');
 
 export default function CostEntryList(props) {
 
@@ -14,7 +16,7 @@ export default function CostEntryList(props) {
 
 
   useEffect(() => {
-    axios.post("http://localhost:8080/api/goals/opex/allGoals").then(response => {
+    axios.post(`http://${config.host}:${config.port}/api/goals/opex/allGoals`).then(response => {
         console.log(response.data)
         setEntries(response.data)
       });
@@ -31,17 +33,12 @@ export default function CostEntryList(props) {
         <title>OpEx Goals</title>
       </Helmet>
 
-      <Box
-        sx={{
-          py: 3
-        }}
-      >
-        <Container maxWidth="lg">
-          <Box sx={{ pt: 3 }}>
-            
-          </Box>
-        </Container>
-      </Box>
+      <Card>
+
+      <CardHeader
+          subheader="Submit and veiw OpEx-related goals"
+          title="OpEx"
+        />
 
       <Box
         sx={{
@@ -80,9 +77,11 @@ export default function CostEntryList(props) {
       <CostPopup
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
+        type={1}
       >
 
       </CostPopup>
+      </Card>
     </>
   )
 };

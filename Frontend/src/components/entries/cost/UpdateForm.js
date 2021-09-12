@@ -19,6 +19,8 @@ import Cookies from 'universal-cookie';
 
 import { useEffect, useState } from 'react';
 
+const config = require('../../../config');
+
 const EntryForm = ({data}) => {
 
     const [isLoading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ const EntryForm = ({data}) => {
     useEffect(() => {
         axios({
             method: 'post',
-            url: 'http://localhost:8080/api/entries/cost/select',
+            url: `http://${config.host}:${config.port}/api/entries/cost/select`,
             headers: {'Content-Type': 'application/json; charset=utf-8'}, 
             data: {
                 idEntry: data
@@ -84,7 +86,7 @@ const EntryForm = ({data}) => {
 
             axios({
                 method: 'post',
-                url: 'http://localhost:8080/api/entries/cost/update',
+                url: `http://${config.host}:${config.port}/api/entries/cost/update`,
                 headers: {'Content-Type': 'application/json; charset=utf-8'}, 
                 data: {
                     reportDate: reportDate,

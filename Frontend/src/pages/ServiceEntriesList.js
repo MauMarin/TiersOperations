@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet';
-import { Box, Button, Container } from '@material-ui/core';
+import { Box, Button, Card, CardHeader, Container } from '@material-ui/core';
 
 import ServiceResults from '../components/entries/service/ServiceResults';
 import axios from 'axios';
@@ -10,6 +10,8 @@ import Cookies from 'universal-cookie';
 
 var state = true;
 
+const config = require('../config');
+
 export default function ServiceEntriesList(props){
 
   const [isLoading, setLoading] = useState(true);
@@ -17,7 +19,7 @@ export default function ServiceEntriesList(props){
   const [openPopup, setOpenPopup] = useState(false);
 
   useEffect(() => {
-    axios.post("http://localhost:8080/api/entries/service/allEntries").then(response => {
+    axios.post(`http://${config.host}:${config.port}/api/entries/service/allEntries`).then(response => {
         setEntries(response.data)
       });
       const cookie = new Cookies();
@@ -36,6 +38,12 @@ export default function ServiceEntriesList(props){
       <title>Service Entries</title>
     </Helmet>
 
+    <Card>
+
+      <CardHeader
+          subheader="Submit and veiw Service-related data"
+          title="Service"
+        />
 
     <Box
       sx={{
@@ -79,6 +87,7 @@ export default function ServiceEntriesList(props){
     >
 
     </Popup>
+    </Card>
   </>
   )
 };

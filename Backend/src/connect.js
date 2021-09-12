@@ -8,17 +8,6 @@ const sequelize = new Sequelize(config.sql.database, config.sql.user, config.sql
     port: config.sql.port
 });
 
-/*
-async function test(){
-    try{
-        await sequelize.authenticate();
-        console.log('Worked..');
-    } catch(err){
-        console.log(err);
-    }
-}
-*/
-
 exports.sequelize = sequelize;
 exports.DataTypes = DataTypes;
 exports.QueryTypes = QueryTypes

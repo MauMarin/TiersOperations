@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet';
-import { Box, Button, Container } from '@material-ui/core';
+import { Box, Button, Card, CardHeader, Container } from '@material-ui/core';
 
 import EntryResults from '../components/entries/cost/CostEntry';
 import axios from 'axios';
@@ -9,6 +9,8 @@ import CostPopup from '../components/entries/cost/CostPopup';
 import Cookies from 'universal-cookie';
 
 var state = true;
+
+const config = require('../config');
 
 export default function CostEntryList(props) {
 
@@ -20,7 +22,7 @@ export default function CostEntryList(props) {
 
   useEffect(() => {
     setLoading(false);
-    axios.post("http://localhost:8080/api/entries/cost/allEntries").then(response => {
+    axios.post(`http://${config.host}:${config.port}/api/entries/cost/allEntries`).then(response => {
         setEntries(response.data)
     });
     const cookie = new Cookies();
@@ -37,6 +39,13 @@ export default function CostEntryList(props) {
       <Helmet>
         <title>Cost Entries</title>
       </Helmet>
+
+      <Card>
+
+      <CardHeader
+          subheader="Submit and veiw cost-related data"
+          title="Cost"
+        />
 
       <Box
         sx={{
@@ -80,6 +89,7 @@ export default function CostEntryList(props) {
       >
 
       </CostPopup>
+      </Card>
     </>
   )
 };

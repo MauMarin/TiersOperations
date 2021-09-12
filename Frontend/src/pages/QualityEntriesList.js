@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet';
-import { Box, Button, Container } from '@material-ui/core';
+import { Box, Button, Card, CardHeader, Container } from '@material-ui/core';
 
 import QualityResults from '../components/entries/quality/QualityResults';
 import axios from 'axios';
@@ -10,6 +10,8 @@ import Cookies from 'universal-cookie';
 
 var state = true;
 
+const config = require('../config');
+
 export default function QualityList(props) {
 
   const [isLoading, setLoading] = useState(true);
@@ -17,7 +19,7 @@ export default function QualityList(props) {
   const [openPopup, setOpenPopup] = useState(false);
 
   useEffect(() => {
-    axios.post("http://localhost:8080/api/entries/quality/allEntries").then(response => {
+    axios.post(`http://${config.host}:${config.port}/api/entries/quality/allEntries`).then(response => {
         setEntries(response.data)
       });
       const cookie = new Cookies();
@@ -35,6 +37,13 @@ export default function QualityList(props) {
       <Helmet>
         <title>Quality Entries</title>
       </Helmet>
+
+      <Card>
+
+      <CardHeader
+          subheader="Submit and veiw Quality-related data"
+          title="Quality"
+        />
 
 
       <Box
@@ -79,6 +88,7 @@ export default function QualityList(props) {
       >
 
       </Popup>
+      </Card>
     </>
   )
 };

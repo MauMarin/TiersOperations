@@ -1,5 +1,5 @@
 import { Helmet } from 'react-helmet';
-import { Box, Button, Container } from '@material-ui/core';
+import { Box, Button, Card, CardHeader, Container } from '@material-ui/core';
 
 import OpExResults from '../components/entries/opex/OpExResults';
 import axios from 'axios';
@@ -10,6 +10,8 @@ import Cookies from 'universal-cookie';
 
 var state = true;
 
+const config = require('../config');
+
 export default function OpExEntryList(props) {
 
   const [isLoading, setLoading] = useState(true);
@@ -17,7 +19,7 @@ export default function OpExEntryList(props) {
   const [openPopup, setOpenPopup] = useState(false);
 
   useEffect(() => {
-    axios.post("http://localhost:8080/api/entries/opex/allEntries").then(response => {
+    axios.post(`http://${config.host}:${config.port}/api/entries/opex/allEntries`).then(response => {
         setEntries(response.data)
       });
       const cookie = new Cookies();
@@ -35,6 +37,13 @@ export default function OpExEntryList(props) {
       <Helmet>
         <title>OpEx Entries</title>
       </Helmet>
+
+      <Card>
+
+      <CardHeader
+          subheader="Submit and veiw OpEx-related data"
+          title="OpEx"
+        />
 
       <Box
         sx={{
@@ -78,6 +87,7 @@ export default function OpExEntryList(props) {
       >
 
       </Popup>
+      </Card>
     </>
   )
 };

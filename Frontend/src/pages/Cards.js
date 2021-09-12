@@ -24,6 +24,8 @@ import CostPopup from '../components/cards/Popup';
 
 import Cookies from 'universal-cookie';
 
+const config = require('../config');
+
 var state = true;
 
 export default function CostEntryList(props) {
@@ -48,7 +50,7 @@ export default function CostEntryList(props) {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (value === 'green' || value === 'yellow' || value === 'red') {
-      axios.post("http://localhost:8080/api/cards/getByStatus", { "status": value }).then(response => {
+      axios.post(`http://${config.host}:${config.port}/api/cards/getByStatus`, { "status": value }).then(response => {
         setEntries(response.data)
         setColor(value)
       });

@@ -7,6 +7,8 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import UserPopup from '../components/users/UserPopup'
 
+const config = require('../config');
+
 export default function Users(props){
 
   const [isLoading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ export default function Users(props){
 
   useEffect(() => {
     const depID = 1;
-    axios.post("http://localhost:8080/api/users/getAll", {depID}).then(response => {
+    axios.post(`http://${config.host}:${config.port}/api/users/getAll`, {depID}).then(response => {
       console.log(response.data)
       setEntries(response.data)
       setLoading(false);
