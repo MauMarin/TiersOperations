@@ -32,6 +32,12 @@ EXEC	[dbo].[usp_DepartmentInsert]
 
 GO
 
+EXEC	[dbo].[usp_DepartmentInsert]
+		@name = N'Service',
+		@description = N'Service department stuff'
+
+GO
+
 
 -- Roles
 EXEC	[dbo].[usp_RoleInsert]
@@ -75,58 +81,10 @@ USE [TiersOperations]
 GO
 
 EXEC	[dbo].[usp_UsersInsert]
-		@name = N'User 1',
-		@username = N'U1',
+		@name = N'Super User',
+		@username = N'SU',
 		@depID = 1,
 		@role = 4,
-		@password = N'U1_PWD'
-GO
-
-EXEC	[dbo].[usp_UsersInsert]
-		@name = N'User 2',
-		@username = N'U2',
-		@depID = 1,
-		@role = 3,
-		@password = N'U2_PWD'
-GO
-
-EXEC	[dbo].[usp_UsersInsert]
-		@name = N'User 3',
-		@username = N'U3',
-		@depID = 1,
-		@role = 2,
-		@password = N'U3_PWD'
-GO
-
-EXEC	[dbo].[usp_UsersInsert]
-		@name = N'User 4',
-		@username = N'U4',
-		@depID = 2,
-		@role = 4,
-		@password = N'U4_PWD'
-GO
-
-EXEC	[dbo].[usp_UsersInsert]
-		@name = N'User 5',
-		@username = N'U5',
-		@depID = 2,
-		@role = 3,
-		@password = N'U5_PWD'
-GO
-
-EXEC	[dbo].[usp_UsersInsert]
-		@name = N'User 6',
-		@username = N'U6',
-		@depID = 2,
-		@role = 2,
-		@password = N'U6_PWD'
-GO
-
-EXEC	[dbo].[usp_UsersInsert]
-		@name = N'User 7',
-		@username = N'U7',
-		@depID = 3,
-		@role = 4,
-		@password = N'U7_PWD'
+		@password = N'medtronic2021'
 GO
 

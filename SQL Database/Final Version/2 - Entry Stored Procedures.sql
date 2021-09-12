@@ -1,3 +1,4 @@
+
 USE [TiersOperations];
 GO
 
@@ -14,7 +15,7 @@ AS
 
 	BEGIN TRAN
 
-	SELECT [id], [fiscalYear], [fiscalMonth], [reportDate], [createdBy], [modifiedBy], [createdDate], [modifiedDate], [tier] 
+	SELECT [id], [fiscalYear], [fiscalMonth], [reportDate], [createdBy], [modifiedBy], [createdDate], [modifiedDate] 
 	FROM   [dbo].[Entry] 
 	WHERE  ([id] = @id OR @id IS NULL) 
 
@@ -30,21 +31,18 @@ CREATE PROC [dbo].[usp_EntryInsert]
     @fiscalMonth nchar(10),
     @reportDate date,
     @createdBy int,
-    @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int
+    @modifiedBy int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 	
 	BEGIN TRAN
 	
-	INSERT INTO [dbo].[Entry] ([fiscalYear], [fiscalMonth], [reportDate], [createdBy], [modifiedBy], [createdDate], [modifiedDate], [tier])
-	SELECT @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	INSERT INTO [dbo].[Entry] ([fiscalYear], [fiscalMonth], [reportDate], [createdBy], [modifiedBy], [createdDate], [modifiedDate])
+	SELECT @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, getdate(), getdate()
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [fiscalYear], [fiscalMonth], [reportDate], [createdBy], [modifiedBy], [createdDate], [modifiedDate], [tier]
+	SELECT [id], [fiscalYear], [fiscalMonth], [reportDate], [createdBy], [modifiedBy], [createdDate], [modifiedDate]
 	FROM   [dbo].[Entry]
 	WHERE  [id] = SCOPE_IDENTITY()
 	-- End Return Select <- do not remove
@@ -63,9 +61,7 @@ CREATE PROC [dbo].[usp_EntryUpdate]
     @reportDate date,
     @createdBy int,
     @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int
+    @createdDate datetime
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -73,11 +69,11 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[Entry]
-	SET    [fiscalYear] = @fiscalYear, [fiscalMonth] = @fiscalMonth, [reportDate] = @reportDate, [createdBy] = @createdBy, [modifiedBy] = @modifiedBy, [createdDate] = @createdDate, [modifiedDate] = @modifiedDate, [tier] = @tier
+	SET    [fiscalYear] = @fiscalYear, [fiscalMonth] = @fiscalMonth, [reportDate] = @reportDate, [createdBy] = @createdBy, [modifiedBy] = @modifiedBy, [createdDate] = @createdDate, [modifiedDate] = getdate()
 	WHERE  [id] = @id
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [fiscalYear], [fiscalMonth], [reportDate], [createdBy], [modifiedBy], [createdDate], [modifiedDate], [tier]
+	SELECT [id], [fiscalYear], [fiscalMonth], [reportDate], [createdBy], [modifiedBy], [createdDate], [modifiedDate]
 	FROM   [dbo].[Entry]
 	WHERE  [id] = @id	
 	-- End Return Select <- do not remove
@@ -122,9 +118,10 @@ AS
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.*, c.*, convert(varchar(20), e.createdDate, 103) as createdDateH, u.name as createdByH from Entry e
     inner join CostEntry c on e.id = c.entry
-    where e.id = @idEntry
+    inner join Users u on e.createdBy = u.id
+    where c.id = @idEntry
 
 	COMMIT
 GO
@@ -141,10 +138,6 @@ CREATE PROC [dbo].[usp_CostEntryInsert]
     @reportDate date,
     @createdBy int,
     @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
-
 	--> Cost variables
     @scrap float,
     @conversionLoss float,
@@ -158,7 +151,7 @@ AS
 	
 	BEGIN TRAN
 	
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy
 	
 	INSERT INTO [dbo].[CostEntry] ([scrap], [conversionLoss], [toolConsumption], [toolRate], [earnHours], [energyRate], [entry])
 	SELECT @scrap, @conversionLoss, @toolConsumption, @toolRate, @earnHours, @energyRate, @@IDENTITY
@@ -180,6 +173,7 @@ END
 GO
 CREATE PROC [dbo].[usp_CostEntryUpdate] 
     --> Entry variables
+    @id int, 
 	@idEntry int, 
 	@fiscalYear varchar(4),
     @fiscalMonth nchar(10),
@@ -187,8 +181,6 @@ CREATE PROC [dbo].[usp_CostEntryUpdate]
     @createdBy int,
     @modifiedBy int,
     @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
 
 	--> Cost variables
     @scrap float,
@@ -205,14 +197,14 @@ AS
 
 	UPDATE [dbo].[CostEntry]
 	SET    [scrap] = @scrap, [conversionLoss] = @conversionLoss, [toolConsumption] = @toolConsumption, [toolRate] = @toolRate, [earnHours] = @earnHours, [energyRate] = @energyRate, [entry] = @idEntry
-	WHERE  [entry] = @idEntry
+	WHERE  [id] = @id
 
-	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [scrap], [conversionLoss], [toolConsumption], [toolRate], [earnHours], [energyRate], [entry]
-	FROM   [dbo].[CostEntry]
-	WHERE  [entry] = @@IDENTITY	
+	SELECT e.*, c.* from Entry e
+    inner join CostEntry c on e.id = c.entry
+	WHERE  c.entry = @idEntry
 	-- End Return Select <- do not remove
 
 	COMMIT
@@ -247,17 +239,16 @@ BEGIN
 END 
 GO
 CREATE PROC [dbo].[usp_EntriesByCost]  
-    @depID int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.id, e.fiscalYear, e.fiscalMonth, convert(varchar(20), e.reportDate, 101) as reportDate, u.name as createdBy, u2.name as modifiedBy, convert(varchar(20), e.createdDate, 103) as createdDate, convert(varchar(20), e.modifiedDate, 103) as modifiedDate, c.* from Entry e
     inner join CostEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
-	where u.depID = @depID
+    inner join Users u2 on e.modifiedBy = u2.id
 
 	COMMIT
 GO
@@ -280,9 +271,10 @@ AS
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.*, c.*, convert(varchar(20), e.createdDate, 103) as createdDateH, u.name as createdByH from Entry e
     inner join OpExEntry c on e.id = c.entry
-    where e.id = @idEntry
+    inner join Users u on e.createdBy = u.id
+    where c.id = @idEntry
 
 	COMMIT
 GO
@@ -300,9 +292,6 @@ CREATE PROC [dbo].[usp_OpExEntryInsert]
     @reportDate date,
     @createdBy int,
     @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
 
 	--> OpEx variables
     @evaluation6S int,
@@ -314,7 +303,7 @@ AS
 	
 	BEGIN TRAN
 
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy
 	
 	INSERT INTO [dbo].[OpExEntry] ([evaluation6S], [trainingOnTime], [completedOnTime], [entry])
 	SELECT @evaluation6S, @trainingOnTime, @completedOnTime, @@IDENTITY
@@ -336,6 +325,7 @@ END
 GO
 CREATE PROC [dbo].[usp_OpExEntryUpdate] 
     --> Entry variables
+    @id int,
 	@idEntry int, 
 	@fiscalYear varchar(4),
     @fiscalMonth nchar(10),
@@ -343,8 +333,6 @@ CREATE PROC [dbo].[usp_OpExEntryUpdate]
     @createdBy int,
     @modifiedBy int,
     @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
 
 	--> OpEx variables
     @evaluation6S int,
@@ -358,14 +346,14 @@ AS
 
 	UPDATE [dbo].[OpExEntry]
 	SET    [evaluation6S] = @evaluation6S, [trainingOnTime] = @trainingOnTime, [completedOnTime] = @completedOnTime, [entry] = @idEntry
-	WHERE  [entry] = @idEntry
+	WHERE  [id] = @id
 
-	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [evaluation6S], [trainingOnTime], [completedOnTime], [entry]
-	FROM   [dbo].[OpExEntry]
-	WHERE  [id] = @@IDENTITY	
+	SELECT e.*, c.* from Entry e
+    inner join OpExEntry c on e.id = c.entry
+	WHERE  c.entry = @idEntry	
 	-- End Return Select <- do not remove
 
 	COMMIT
@@ -400,336 +388,19 @@ BEGIN
 END 
 GO
 CREATE PROC [dbo].[usp_EntriesByOpex]  
-    @depID int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.id, e.fiscalYear, e.fiscalMonth, convert(varchar(20), e.reportDate, 101) as reportDate, u.name as createdBy, u2.name as modifiedBy, convert(varchar(20), e.createdDate, 103) as createdDate, convert(varchar(20), e.modifiedDate, 103) as modifiedDate, c.* from Entry e
     inner join OpExEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
-	where u.depID = @depID
+    inner join Users u2 on e.modifiedBy = u2.id
 
 	COMMIT
 GO
-----------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------
-
-USE [TiersOperations];
-GO
-
-IF OBJECT_ID('[dbo].[usp_QualityEntrySelect]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_QualityEntrySelect] 
-END 
-GO
-CREATE PROC [dbo].[usp_QualityEntrySelect] 
-    @idEntry int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-
-	BEGIN TRAN
-
-	select e.*, c.* from Entry e
-    inner join QualityEntry c on e.id = c.entry
-    where e.id = @idEntry
-
-	COMMIT
-GO
-
-
-IF OBJECT_ID('[dbo].[usp_QualityEntryInsert]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_QualityEntryInsert] 
-END 
-GO
-CREATE PROC [dbo].[usp_QualityEntryInsert]
-	--> Entry variables
-	@fiscalYear varchar(4),
-    @fiscalMonth nchar(10),
-    @reportDate date,
-    @createdBy int,
-    @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
-
-	--> Cost variables
-    @larOverall float,
-    @larHumacao float,
-    @larWarsaw float,
-    @fpy25 float,
-    @fly65 float,
-    @NCROpen int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-	
-	BEGIN TRAN
-
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
-	
-	INSERT INTO [dbo].[QualityEntry] ([larOverall], [larHumacao], [larWarsaw], [fpy25], [fly65], [NCROpen], [entry])
-	SELECT @larOverall, @larHumacao, @larWarsaw, @fpy25, @fly65, @NCROpen, @@IDENTITY
-	
-	-- Begin Return Select <- do not remove
-	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fpy25], [fly65], [NCROpen], [entry]
-	FROM   [dbo].[QualityEntry]
-	WHERE  [id] = SCOPE_IDENTITY()
-	-- End Return Select <- do not remove
-               
-	COMMIT
-GO
-
-
-IF OBJECT_ID('[dbo].[usp_QualityEntryUpdate]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_QualityEntryUpdate] 
-END 
-GO
-CREATE PROC [dbo].[usp_QualityEntryUpdate] 
-    --> Entry variables
-	@idEntry int, 
-	@fiscalYear varchar(4),
-    @fiscalMonth nchar(10),
-    @reportDate date,
-    @createdBy int,
-    @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
-
-	--> Cost variables
-    @larOverall float,
-    @larHumacao float,
-    @larWarsaw float,
-    @fpy25 float,
-    @fly65 float,
-    @NCROpen int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-	
-	BEGIN TRAN
-
-	UPDATE [dbo].[QualityEntry]
-	SET    [larOverall] = @larOverall, [larHumacao] = @larHumacao, [larWarsaw] = @larWarsaw, [fpy25] = @fpy25, [fly65] = @fly65, [NCROpen] = @NCROpen, [entry] = @idEntry
-	WHERE  [entry] = @idEntry
-
-	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
-	
-	-- Begin Return Select <- do not remove
-	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fpy25], [fly65], [NCROpen], [entry]
-	FROM   [dbo].[QualityEntry]
-	WHERE  [entry] = @@IDENTITY	
-	-- End Return Select <- do not remove
-
-	COMMIT
-GO
-
-
-IF OBJECT_ID('[dbo].[usp_QualityEntryDelete]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_QualityEntryDelete] 
-END 
-GO
-CREATE PROC [dbo].[usp_QualityEntryDelete] 
-    @idEntry int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-	
-	BEGIN TRAN
-
-	DELETE
-	FROM   [dbo].[QualityEntry]
-	WHERE  [entry] = @idEntry
-
-	exec usp_EntryDelete @idEntry
-
-	COMMIT
-GO
-
-IF OBJECT_ID('[dbo].[usp_EntriesByQuality]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_EntriesByQuality] 
-END 
-GO
-CREATE PROC [dbo].[usp_EntriesByQuality]  
-    @depID int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-
-	BEGIN TRAN
-
-	select e.*, c.* from Entry e
-    inner join QualityEntry c on e.id = c.entry
-    inner join Users u on e.createdBy = u.id
-	where u.depID = @depID
-
-	COMMIT
-GO
-
-----------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------
-
-USE [TiersOperations];
-GO
-
-IF OBJECT_ID('[dbo].[usp_SafetyEntrySelect]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_SafetyEntrySelect] 
-END 
-GO
-CREATE PROC [dbo].[usp_SafetyEntrySelect] 
-    @idEntry int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-
-	BEGIN TRAN
-
-	select e.*, c.* from Entry e
-    inner join SafetyEntry c on e.id = c.entry
-    where e.id = @idEntry
-
-	COMMIT
-GO
-
-
-IF OBJECT_ID('[dbo].[usp_SafetyEntryInsert]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_SafetyEntryInsert] 
-END 
-GO
-CREATE PROC [dbo].[usp_SafetyEntryInsert] 
-	--> Entry variables
-	@fiscalYear varchar(4),
-    @fiscalMonth nchar(10),
-    @reportDate date,
-    @createdBy int,
-    @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
-
-	--> Safety variables
-    @HOs int,
-    @TRIR float,
-    @firstAid int,
-    @nearMiss int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-	
-	BEGIN TRAN
-
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
-	
-	INSERT INTO [dbo].[SafetyEntry] ([HOs], [TRIR], [firstAid], [nearMiss], [entry])
-	SELECT @HOs, @TRIR, @firstAid, @nearMiss, @@IDENTITY
-	
-	-- Begin Return Select <- do not remove
-	SELECT [id], [HOs], [TRIR], [firstAid], [nearMiss], [entry]
-	FROM   [dbo].[SafetyEntry]
-	WHERE  [id] = SCOPE_IDENTITY()
-	-- End Return Select <- do not remove
-               
-	COMMIT
-GO
-
-
-IF OBJECT_ID('[dbo].[usp_SafetyEntryUpdate]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_SafetyEntryUpdate] 
-END 
-GO
-CREATE PROC [dbo].[usp_SafetyEntryUpdate] 
-    --> Entry variables
-    @idEntry int,
-	@fiscalYear varchar(4),
-    @fiscalMonth nchar(10),
-    @reportDate date,
-    @createdBy int,
-    @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
-
-	--> Safety variables
-    @HOs int,
-    @TRIR float,
-    @firstAid int,
-    @nearMiss int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-	
-	BEGIN TRAN
-
-	UPDATE [dbo].[SafetyEntry]
-	SET    [HOs] = @HOs, [TRIR] = @TRIR, [firstAid] = @firstAid, [nearMiss] = @nearMiss, [entry] = @idEntry
-	WHERE  [entry] = @idEntry
-
-	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
-	
-	-- Begin Return Select <- do not remove
-	SELECT [id], [HOs], [TRIR], [firstAid], [nearMiss], [entry]
-	FROM   [dbo].[SafetyEntry]
-	WHERE  [id] = @@IDENTITY	
-	-- End Return Select <- do not remove
-
-	COMMIT
-GO
-
-
-IF OBJECT_ID('[dbo].[usp_SafetyEntryDelete]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_SafetyEntryDelete] 
-END 
-GO
-CREATE PROC [dbo].[usp_SafetyEntryDelete] 
-    @idEntry int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-	
-	BEGIN TRAN
-
-	DELETE
-	FROM   [dbo].[SafetyEntry]
-	WHERE  [entry] = @idEntry
-
-	exec usp_EntryDelete @idEntry
-
-	COMMIT
-GO
-
-IF OBJECT_ID('[dbo].[usp_EntriesBySafety]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_EntriesBySafety] 
-END 
-GO
-CREATE PROC [dbo].[usp_EntriesBySafety]  
-    @depID int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-
-	BEGIN TRAN
-
-	select e.*, c.* from Entry e
-    inner join SafetyEntry c on e.id = c.entry
-    inner join Users u on e.createdBy = u.id
-	where u.depID = @depID
-
-	COMMIT
-GO
-
 ----------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------
 
@@ -749,9 +420,9 @@ AS
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.*, c.*, convert(varchar(20), e.createdDate, 103) as createdDateH from Entry e
     inner join ServiceEntry c on e.id = c.entry
-    where e.id = @idEntry 
+    where c.id = @idEntry
 
 	COMMIT
 GO
@@ -769,9 +440,6 @@ CREATE PROC [dbo].[usp_ServiceEntryInsert]
     @reportDate date,
     @createdBy int,
     @modifiedBy int,
-    @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
 
 	--> Service variables
 	@op20 int,
@@ -787,7 +455,7 @@ AS
 	
 	BEGIN TRAN
 
-	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate, @modifiedDate, @tier
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy
 	
 	INSERT INTO [dbo].[ServiceEntry] ([op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [entry])
 	SELECT @op20, @op40, @op60, @op65, @op70, @intervention, @OEE, @@IDENTITY
@@ -809,6 +477,7 @@ END
 GO
 CREATE PROC [dbo].[usp_ServiceEntryUpdate] 
     --> Entry variables
+    @id int,
 	@idEntry int, 
 	@fiscalYear varchar(4),
     @fiscalMonth nchar(10),
@@ -816,8 +485,6 @@ CREATE PROC [dbo].[usp_ServiceEntryUpdate]
     @createdBy int,
     @modifiedBy int,
     @createdDate datetime,
-    @modifiedDate datetime,
-    @tier int,
 
 	--> Service variables
     @op20 int,
@@ -835,12 +502,14 @@ AS
 
 	UPDATE [dbo].[ServiceEntry]
 	SET    [op20] = @op20, [op40] = @op40, [op60] = @op60, [op65] = @op65, [op70] = @op70, [intervention] = @intervention, [OEE] = @OEE, [entry] = @idEntry
-	WHERE  [entry] = @idEntry
+	WHERE  [id] = @id
+
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [entry]
-	FROM   [dbo].[ServiceEntry]
-	WHERE  [id] = @@IDENTITY	
+	SELECT e.*, c.* from Entry e
+    inner join ServiceEntry c on e.id = c.entry
+	WHERE  c.entry = @idEntry		
 	-- End Return Select <- do not remove
 
 	COMMIT
@@ -875,17 +544,321 @@ BEGIN
 END 
 GO
 CREATE PROC [dbo].[usp_EntriesByService]  
-    @depID int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 
 	BEGIN TRAN
 
-	select e.*, c.* from Entry e
+	select e.id, e.fiscalYear, e.fiscalMonth, convert(varchar(20), e.reportDate, 101) as reportDate, u.name as createdBy, u2.name as modifiedBy, convert(varchar(20), e.createdDate, 103) as createdDate, convert(varchar(20), e.modifiedDate, 103) as modifiedDate, c.* from Entry e
     inner join ServiceEntry c on e.id = c.entry
     inner join Users u on e.createdBy = u.id
-	where u.depID = @depID
+    inner join Users u2 on e.modifiedBy = u2.id
+
+	COMMIT
+GO
+
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+
+USE [TiersOperations];
+GO
+
+IF OBJECT_ID('[dbo].[usp_SafetyEntrySelect]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_SafetyEntrySelect] 
+END 
+GO
+CREATE PROC [dbo].[usp_SafetyEntrySelect] 
+    @idEntry int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select e.*, c.*, convert(varchar(20), e.createdDate, 103) as createdDateH from Entry e
+    inner join SafetyEntry c on e.id = c.entry
+    where c.id = @idEntry
+
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_SafetyEntryInsert]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_SafetyEntryInsert] 
+END 
+GO
+CREATE PROC [dbo].[usp_SafetyEntryInsert] 
+	--> Entry variables
+	@fiscalYear varchar(4),
+    @fiscalMonth nchar(10),
+    @reportDate date,
+    @createdBy int,
+    @modifiedBy int,
+
+	--> Safety variables
+    @HOs int,
+    @TRIR float,
+    @firstAid int,
+    @nearMiss int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy
+	
+	INSERT INTO [dbo].[SafetyEntry] ([HOs], [TRIR], [firstAid], [nearMiss], [entry])
+	SELECT @HOs, @TRIR, @firstAid, @nearMiss, @@IDENTITY
+	
+	-- Begin Return Select <- do not remove
+	SELECT [id], [HOs], [TRIR], [firstAid], [nearMiss], [entry]
+	FROM   [dbo].[SafetyEntry]
+	WHERE  [id] = SCOPE_IDENTITY()
+	-- End Return Select <- do not remove
+               
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_SafetyEntryUpdate]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_SafetyEntryUpdate] 
+END 
+GO
+CREATE PROC [dbo].[usp_SafetyEntryUpdate] 
+    --> Entry variables
+    @id int,
+    @idEntry int,
+	@fiscalYear varchar(4),
+    @fiscalMonth nchar(10),
+    @reportDate date,
+    @createdBy int,
+    @modifiedBy int,
+    @createdDate datetime,
+
+	--> Safety variables
+    @HOs int,
+    @TRIR float,
+    @firstAid int,
+    @nearMiss int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	UPDATE [dbo].[SafetyEntry]
+	SET    [HOs] = @HOs, [TRIR] = @TRIR, [firstAid] = @firstAid, [nearMiss] = @nearMiss, [entry] = @idEntry
+	WHERE  [id] = @id
+
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate
+	
+	-- Begin Return Select <- do not remove
+	SELECT e.*, c.* from Entry e
+    inner join SafetyEntry c on e.id = c.entry
+	WHERE  c.entry = @idEntry	
+	-- End Return Select <- do not remove
+
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_SafetyEntryDelete]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_SafetyEntryDelete] 
+END 
+GO
+CREATE PROC [dbo].[usp_SafetyEntryDelete] 
+    @idEntry int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	DELETE
+	FROM   [dbo].[SafetyEntry]
+	WHERE  [entry] = @idEntry
+
+	exec usp_EntryDelete @idEntry
+
+	COMMIT
+GO
+
+IF OBJECT_ID('[dbo].[usp_EntriesBySafety]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_EntriesBySafety] 
+END 
+GO
+CREATE PROC [dbo].[usp_EntriesBySafety]  
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select e.id, e.fiscalYear, e.fiscalMonth, convert(varchar(20), e.reportDate, 101) as reportDate, u.name as createdBy, u2.name as modifiedBy, convert(varchar(20), e.createdDate, 103) as createdDate, convert(varchar(20), e.modifiedDate, 103) as modifiedDate, c.* from Entry e
+    inner join SafetyEntry c on e.id = c.entry
+    inner join Users u on e.createdBy = u.id
+    inner join Users u2 on e.modifiedBy = u2.id
+
+	COMMIT
+GO
+
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+
+USE [TiersOperations];
+GO
+
+IF OBJECT_ID('[dbo].[usp_QualityEntrySelect]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_QualityEntrySelect] 
+END 
+GO
+CREATE PROC [dbo].[usp_QualityEntrySelect] 
+    @idEntry int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select e.*, c.*, convert(varchar(20), e.createdDate, 103) as createdDateH, u.name as createdByH from Entry e
+    inner join QualityEntry c on e.id = c.entry
+    inner join Users u on e.createdBy = u.id
+    where c.id = @idEntry
+
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_QualityEntryInsert]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_QualityEntryInsert] 
+END 
+GO
+CREATE PROC [dbo].[usp_QualityEntryInsert]
+	--> Entry variables
+	@fiscalYear varchar(4),
+    @fiscalMonth nchar(10),
+    @reportDate date,
+    @createdBy int,
+    @modifiedBy int,
+
+	--> Cost variables
+    @larOverall float,
+    @larHumacao float,
+    @larWarsaw float,
+    @fly65 float,
+    @NCROpen int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	exec usp_EntryInsert @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy
+	
+	INSERT INTO [dbo].[QualityEntry] ([larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [entry])
+	SELECT @larOverall, @larHumacao, @larWarsaw, @fly65, @NCROpen, @@IDENTITY
+	
+	-- Begin Return Select <- do not remove
+	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [entry]
+	FROM   [dbo].[QualityEntry]
+	WHERE  [id] = SCOPE_IDENTITY()
+	-- End Return Select <- do not remove
+               
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_QualityEntryUpdate]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_QualityEntryUpdate] 
+END 
+GO
+CREATE PROC [dbo].[usp_QualityEntryUpdate] 
+    --> Entry variables
+    @id int,
+	@idEntry int, 
+	@fiscalYear varchar(4),
+    @fiscalMonth nchar(10),
+    @reportDate date,
+    @createdBy int,
+    @modifiedBy int,
+    @createdDate datetime,
+
+	--> Cost variables
+    @larOverall float,
+    @larHumacao float,
+    @larWarsaw float,
+    @fly65 float,
+    @NCROpen int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	UPDATE [dbo].[QualityEntry]
+	SET    [larOverall] = @larOverall, [larHumacao] = @larHumacao, [larWarsaw] = @larWarsaw, [fly65] = @fly65, [NCROpen] = @NCROpen, [entry] = @idEntry
+	WHERE  [id] = @id
+
+	exec usp_EntryUpdate @idEntry, @fiscalYear, @fiscalMonth, @reportDate, @createdBy, @modifiedBy, @createdDate
+	
+	-- Begin Return Select <- do not remove
+	SELECT e.*, c.* from Entry e
+    inner join QualityEntry c on e.id = c.entry
+	WHERE  c.entry = @idEntry
+	-- End Return Select <- do not remove
+
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_QualityEntryDelete]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_QualityEntryDelete] 
+END 
+GO
+CREATE PROC [dbo].[usp_QualityEntryDelete] 
+    @idEntry int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	DELETE
+	FROM   [dbo].[QualityEntry]
+	WHERE  [entry] = @idEntry
+
+	exec usp_EntryDelete @idEntry
+
+	COMMIT
+GO
+
+IF OBJECT_ID('[dbo].[usp_EntriesByQuality]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_EntriesByQuality] 
+END 
+GO
+CREATE PROC [dbo].[usp_EntriesByQuality]  
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select e.id, e.fiscalYear, e.fiscalMonth, convert(varchar(20), e.reportDate, 101) as reportDate, u.name as createdBy, u2.name as modifiedBy, convert(varchar(20), e.createdDate, 103) as createdDate, convert(varchar(20), e.modifiedDate, 103) as modifiedDate, c.* from Entry e
+    inner join QualityEntry c on e.id = c.entry
+    inner join Users u on e.createdBy = u.id
+    inner join Users u2 on e.modifiedBy = u2.id
 
 	COMMIT
 GO

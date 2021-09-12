@@ -208,177 +208,6 @@ GO
 ----------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------
 
-USE [TiersOperations];
-GO
-
-IF OBJECT_ID('[dbo].[usp_UsersSelect]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_UsersSelect] 
-END 
-GO
-CREATE PROC [dbo].[usp_UsersSelect] 
-    @id int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-
-	BEGIN TRAN
-
-	SELECT [id], [name], [username], [depID], [role], [password] 
-	FROM   [dbo].[Users] 
-	WHERE  ([id] = @id OR @id IS NULL) 
-
-	COMMIT
-GO
-IF OBJECT_ID('[dbo].[usp_UsersInsert]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_UsersInsert] 
-END 
-GO
-
-
-CREATE PROC [dbo].[usp_UsersInsert] 
-    @name varchar(50),
-    @username varchar(50),
-    @depID int,
-    @role int,
-    @password varchar(20)
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-	
-	BEGIN TRAN
-	
-	INSERT INTO [dbo].[Users] ([name], [username], [depID], [role], [password])
-	SELECT @name, @username, @depID, @role, @password
-	
-	-- Begin Return Select <- do not remove
-	SELECT [id], [name], [username], [depID], [role], [password]
-	FROM   [dbo].[Users]
-	WHERE  [id] = SCOPE_IDENTITY()
-	-- End Return Select <- do not remove
-               
-	COMMIT
-GO
-IF OBJECT_ID('[dbo].[usp_UsersUpdate]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_UsersUpdate] 
-END 
-GO
-
-
-CREATE PROC [dbo].[usp_UsersUpdate] 
-    @id int,
-    @name varchar(50),
-    @username varchar(50),
-    @depID int,
-    @role int,
-    @password varchar(20)
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-	
-	BEGIN TRAN
-
-	UPDATE [dbo].[Users]
-	SET    [name] = @name, [username] = @username, [depID] = @depID, [role] = @role, [password] = @password
-	WHERE  [id] = @id
-	
-	-- Begin Return Select <- do not remove
-	SELECT [id], [name], [username], [depID], [role], [password]
-	FROM   [dbo].[Users]
-	WHERE  [id] = @id	
-	-- End Return Select <- do not remove
-
-	COMMIT
-GO
-
-
-IF OBJECT_ID('[dbo].[usp_UsersDelete]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_UsersDelete] 
-END 
-GO
-CREATE PROC [dbo].[usp_UsersDelete] 
-    @id int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-	
-	BEGIN TRAN
-
-	DELETE
-	FROM   [dbo].[Users]
-	WHERE  [id] = @id
-
-	COMMIT
-GO
-
-IF OBJECT_ID('[dbo].[usp_UsersByDep]') IS NOT NULL
-BEGIN 
-    DROP PROC [dbo].[usp_UsersByDep] 
-END 
-GO
-CREATE PROC [dbo].[usp_UsersByDep]  
-    @depID int
-AS 
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-
-	BEGIN TRAN
-
-	select u.* from Users u
-	where u.depID = @depID
-	COMMIT
-GO
-
-
-IF OBJECT_ID('[dbo].[usp_ValidateUser]') IS NOT NULL
-BEGIN
-	DROP PROC [dbo].[usp_ValidateUser]
-END
-GO
-CREATE PROC [dbo].[usp_ValidateUser]
-	@username varchar(50),
-    @password varchar(20)
-AS
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-
-	BEGIN TRAN
-
-	select u.* from Users u
-	where u.username = @username
-	AND u.password = @password
-
-
-
-	COMMIT
-GO
-
-
-IF OBJECT_ID('[dbo].[usp_GetAllUsers]') IS NOT NULL
-BEGIN
-	DROP PROC [dbo].[usp_GetAllUsers]
-END
-GO
-CREATE PROC [dbo].[usp_GetAllUsers]
-AS
-	SET NOCOUNT ON 
-	SET XACT_ABORT ON  
-
-	BEGIN TRAN
-
-	select u.id, u.name, u.username, d.name as "Department", r.name as "Role" from Users u
-	inner join Department d on u.depID = d.id
-    inner join Role r on u.role = r.id
-    order by d.name asc
-
-	COMMIT
-GO
-----------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------
-
 
 IF OBJECT_ID('[dbo].[usp_TierSelect]') IS NOT NULL
 BEGIN 
@@ -624,7 +453,7 @@ AS
 	BEGIN TRAN
 
 
-	select c.id, c.actionPlan, c.description, u1.name as submittedBy, c.creationDate, d.name as deparment, u2.name as directedTo, c.dueDate, u4.name as modifiedBy, c.modifiedDate, c.status, u3.name as createdBy, c.tier from Cards c
+	select c.id, c.actionPlan, c.description, u1.name as submittedBy, convert(varchar(20), c.creationDate, 101) as creationDate, d.name as deparment, u2.name as directedTo, convert(varchar(20), c.dueDate, 101) as dueDate, u4.name as modifiedBy, convert(varchar(20), c.modifiedDate, 101) AS modifiedDate, c.status, u3.name as createdBy, c.tier from Cards c
 	inner join Users u1 on c.submittedBy = u1.id
 	inner join Users u2 on c.directedTo = u2.id
 	inner join Users u3 on c.createdBy = u3.id
@@ -637,4 +466,175 @@ AS
 	--where c.status = @status
 	
 	COMMIT
+GOUSE [TiersOperations];
 GO
+
+IF OBJECT_ID('[dbo].[usp_UsersSelect]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_UsersSelect] 
+END 
+GO
+CREATE PROC [dbo].[usp_UsersSelect] 
+    @id int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	SELECT [id], [name], [username], [depID], [role], [password] 
+	FROM   [dbo].[Users] 
+	WHERE  ([id] = @id OR @id IS NULL) 
+
+	COMMIT
+GO
+IF OBJECT_ID('[dbo].[usp_UsersInsert]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_UsersInsert] 
+END 
+GO
+
+
+CREATE PROC [dbo].[usp_UsersInsert] 
+    @name varchar(50),
+    @username varchar(50),
+    @depID int,
+    @role int,
+    @password varchar(20)
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+	
+	INSERT INTO [dbo].[Users] ([name], [username], [depID], [role], [password])
+	SELECT @name, @username, @depID, @role, @password
+	
+	-- Begin Return Select <- do not remove
+	SELECT [id], [name], [username], [depID], [role], [password]
+	FROM   [dbo].[Users]
+	WHERE  [id] = SCOPE_IDENTITY()
+	-- End Return Select <- do not remove
+               
+	COMMIT
+GO
+IF OBJECT_ID('[dbo].[usp_UsersUpdate]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_UsersUpdate] 
+END 
+GO
+
+
+CREATE PROC [dbo].[usp_UsersUpdate] 
+    @id int,
+    @name varchar(50),
+    @username varchar(50),
+    @depID int,
+    @role int,
+    @password varchar(20)
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	UPDATE [dbo].[Users]
+	SET    [name] = @name, [username] = @username, [depID] = @depID, [role] = @role, [password] = @password
+	WHERE  [id] = @id
+	
+	-- Begin Return Select <- do not remove
+	SELECT [id], [name], [username], [depID], [role], [password]
+	FROM   [dbo].[Users]
+	WHERE  [id] = @id	
+	-- End Return Select <- do not remove
+
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_UsersDelete]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_UsersDelete] 
+END 
+GO
+CREATE PROC [dbo].[usp_UsersDelete] 
+    @id int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+	
+	BEGIN TRAN
+
+	DELETE
+	FROM   [dbo].[Users]
+	WHERE  [id] = @id
+
+	COMMIT
+GO
+
+IF OBJECT_ID('[dbo].[usp_UsersByDep]') IS NOT NULL
+BEGIN 
+    DROP PROC [dbo].[usp_UsersByDep] 
+END 
+GO
+CREATE PROC [dbo].[usp_UsersByDep]  
+    @depID int
+AS 
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select u.* from Users u
+	where u.depID = @depID
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_ValidateUser]') IS NOT NULL
+BEGIN
+	DROP PROC [dbo].[usp_ValidateUser]
+END
+GO
+CREATE PROC [dbo].[usp_ValidateUser]
+	@username varchar(50),
+    @password varchar(20)
+AS
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select u.*, r.name as 'RoleName' from Users u
+	inner join Role r on u.role = r.id
+	where u.username = @username
+	AND u.password = @password
+
+
+
+	COMMIT
+GO
+
+
+IF OBJECT_ID('[dbo].[usp_GetAllUsers]') IS NOT NULL
+BEGIN
+	DROP PROC [dbo].[usp_GetAllUsers]
+END
+GO
+CREATE PROC [dbo].[usp_GetAllUsers]
+AS
+	SET NOCOUNT ON 
+	SET XACT_ABORT ON  
+
+	BEGIN TRAN
+
+	select u.id, u.name, u.username, d.name as "Department", r.name as "Role" from Users u
+	inner join Department d on u.depID = d.id
+    inner join Role r on u.role = r.id
+    order by d.name asc
+
+	COMMIT
+GO
+----------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------
+
