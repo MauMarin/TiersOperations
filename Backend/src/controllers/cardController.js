@@ -7,6 +7,15 @@ const moment = require('moment');
 class CardController{
     constructor(){}
 
+    async readCard(id_){
+        console.log(id_)
+        const entry = await connection.sequelize.query('EXEC [dbo].[usp_CardsSelect] :id',
+            {replacements: {
+                id: id_
+            }});
+        return entry;
+    }
+
     async insertCard(status_, dueDate_, department_, description_, submittedBy_, directedTo_, actionPlan_, createdBy_, tier_){
 
         await connection.sequelize.query('EXEC [dbo].[usp_CardsInsert] :status, :dueDate, :department, :description, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :tier',
@@ -24,11 +33,11 @@ class CardController{
         }});
     };
 
-    async updateCard(idCard_, status_, dueDate_, department_, submittedBy_, directedTo_, actionPlan_, createdBy_, modifiedBy_, creationDate_, tier_){
+    async updateCard(idCard_, status_, dueDate_, department_, submittedBy_, directedTo_, actionPlan_, createdBy_, modifiedBy_, creationDate_, description_, tier_){
 
-        const modifiedDate = moment().format('YYYY-MM-DD HH:ss:mm');
+        console.log(idCard_, status_, dueDate_, department_, submittedBy_, directedTo_, actionPlan_, createdBy_, modifiedBy_, creationDate_, tier_, description_,)
         
-        await connection.sequelize.query('EXEC [dbo].[usp_CardsUpdate] :idCard, :status, :dueDate, :department, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :creationDate, :modifiedDate, :tier',
+        await connection.sequelize.query('EXEC [dbo].[usp_CardsUpdate] :idCard, :status, :dueDate, :department, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :creationDate, :tier, description',
         {replacements: {
             idCard: idCard_,
             status: status_,
@@ -39,9 +48,9 @@ class CardController{
             actionPlan: actionPlan_, 
             createdBy: createdBy_, 
             modifiedBy: modifiedBy_, 
-            creationDate: creationDate_, 
-            modifiedDate: modifiedDate,
-            tier: tier_
+            creationDate: creationDate_,
+            tier: tier_,
+            description: description_,
         }});
 
     };

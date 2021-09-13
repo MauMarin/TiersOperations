@@ -177,6 +177,7 @@ export default function CostEntryList(props) {
       <CostPopup
         openPopup={openPopup}
         setOpenPopup={setOpenPopup}
+        type={1}
       >
 
       </CostPopup>

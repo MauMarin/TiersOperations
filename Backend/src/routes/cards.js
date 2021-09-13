@@ -6,6 +6,23 @@ const router = express.Router();
 
 var controller = new CardController();
 
+router.post('/select', (req, res) => {
+    const {id} = req.body;
+
+    console.log(id)
+
+    try{
+        controller.readCard(id)
+        .then(response => {
+            const entry = response;
+            res.json({"Card":entry[0][0]});
+        })
+    }
+    catch(err){
+        return res.json({success: false, error: err});
+    }
+})
+
 router.post('/insert', (req, res) => {
     //const {status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, tier} = req.body;
     const {status, dueDate, department, description, submittedBy, directedTo, actionPlan, tier, createdBy} = req.body.status;
@@ -25,12 +42,14 @@ router.post('/insert', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
-    const{idCard, status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, modifiedBy, creationDate, tier} = req.body;
+    const{id, status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, modifiedBy, creationDate, description, tier} = req.body.status;
+
+    const dep2 = Number(department)
 
     try{
-        controller.updateCard(idCard, status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, modifiedBy, creationDate, tier)
+        controller.updateCard(id, status, dueDate, dep2, submittedBy, directedTo, actionPlan, createdBy, modifiedBy, creationDate, description, tier)
         .then(() => {
-            return res.json({success: true, message: 'Entry has succesfully been updated'});
+            return res.json({success: true, message: 'Card has succesfully been updated'});
         })
         .catch(err => {
             return res.json({success: false, error: {message: err.message}})
@@ -46,7 +65,7 @@ router.post('/delete', (req, res) => {
     try{
         controller.deleteCard(idCard)
         .then(() => {
-            return res.json({success: true, message: 'Entry has succesfully been deleted'});
+            return res.json({success: true, message: 'Card has succesfully been deleted'});
         })
         .catch(err => {
             return res.json({success: false, error: {message: err.message}})

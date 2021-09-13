@@ -13,11 +13,15 @@ import {
   MoreVertical
 } from 'react-feather';
 
+import { useState } from 'react';
+
 import {withStyles} from '@material-ui/styles';
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 import axios from 'axios';
+
+import Popup from './Popup'
 
 const config = require('../../config');
 
@@ -39,6 +43,9 @@ const StyledDataGrid = withStyles({
 
 export default function DataGridDemo({ cards, ...rest }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const [openPopup, setOpenPopup] = useState(false);
+  const [row, setRow] = useState('');
 
   const columns = [
     { field: 'id', headerName: 'Card ID', width: 150 },
@@ -110,7 +117,7 @@ export default function DataGridDemo({ cards, ...rest }) {
     },
     {
       field: "",
-      headerName: "Change Status",
+      headerName: "Options",
       sortable: false,
       width: 125,
       disableClickEventBubbling: true,
@@ -119,24 +126,11 @@ export default function DataGridDemo({ cards, ...rest }) {
         const handleClick = (event) => {
           setAnchorEl(event.currentTarget);
         };
-      
-        const handleClose = (event) => {
-          setAnchorEl(null);
-          const id = params.row.id
-          const newStatus = (event.nativeEvent.target.outerText.toLowerCase());
+    
 
-          axios({
-            method: 'post',
-            url: `http://http://${config.host}:${config.port}/api/cards/changeStatus`,
-            headers: {'Content-Type': 'application/json; charset=utf-8'}, 
-            data: {
-                idCard: id,
-                status:newStatus
-            }
-          })
-          .then(()=>{
-            window.location.reload();
-          })
+        const onClick = () => {
+          setOpenPopup(true)
+          setRow(params.row.id);
         };
   
         return (
@@ -149,16 +143,20 @@ export default function DataGridDemo({ cards, ...rest }) {
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
-              onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Green</MenuItem>
-              <MenuItem onClick={handleClose}>Yellow</MenuItem>
-              <MenuItem onClick={handleClose}>Red</MenuItem>
+              <MenuItem onClick={onClick}>Edit Card</MenuItem>
             </Menu>
           </div>
         );
       }
-    }
+    },
+    {
+      field: 'modifiedBy',
+      headerName: 'Modified By',
+      sortable: true,
+      width: 160
+    },
+    
   ];
 
   //console.log(cards)
@@ -180,6 +178,13 @@ export default function DataGridDemo({ cards, ...rest }) {
           </div>
         </Box>
       </PerfectScrollbar>
+
+      <Popup
+        openPopup={openPopup}
+        data = {row}
+        type = {2}
+        setOpenPopup={setOpenPopup}
+      ></Popup>
     </Card>
   );
 }

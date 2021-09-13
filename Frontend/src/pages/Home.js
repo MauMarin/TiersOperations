@@ -1,6 +1,8 @@
 import { Helmet } from 'react-helmet';
 import {
-  Box
+  Box,
+  Card,
+  CardHeader
 } from '@material-ui/core';
 
 const Home = () => {
@@ -17,7 +19,12 @@ const Home = () => {
           py: 3
         }}
       >
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa
+        <Card>
+        <CardHeader
+          title="Medtronic internal organization"
+        />
+          <img src={'/static/images/home2.jpeg'} alt="Operations diagram" />
+        </Card>
       </Box>
     </>
   );

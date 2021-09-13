@@ -318,9 +318,10 @@ AS
 
 	BEGIN TRAN
 
-	SELECT [id], [status], [dueDate], [deparment], [submittedBy], [directedTo], [actionPlan], [createdBy], [modifiedBy], [creationDate], [modifiedDate], [tier], [description] 
-	FROM   [dbo].[Cards] 
-	WHERE  ([id] = @id OR @id IS NULL) 
+	SELECT c.*, d.name
+	FROM   [dbo].[Cards] c
+	inner join Department d on c.deparment = d.id
+	WHERE  (c.[id] = @id OR @id IS NULL) 
 
 	COMMIT
 GO
