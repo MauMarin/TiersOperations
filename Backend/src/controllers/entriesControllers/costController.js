@@ -61,23 +61,6 @@ class CostController{
         _toolRate,
         _earnHours,
         _energyRate){
-
-            console.log(
-                _id,
-                _idEntry,
-                _fiscalYear,
-                _fiscalMonth,
-                _reportDate,
-                _createdBy,
-                _modifiedBy,
-                _createdDate,
-                //_modifiedDate,
-                _scrap,
-                _conversionLoss,
-                _toolConsumption,
-                _toolRate,
-                _earnHours,
-                _energyRate)
         
         const entry = await connection.sequelize.query('EXEC [dbo].[usp_CostEntryUpdate] :id, :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :scrap, :conversionLoss, :toolConsumption, :toolRate, :earnHours, :energyRate',
         {replacements: {

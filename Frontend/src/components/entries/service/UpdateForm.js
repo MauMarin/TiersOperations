@@ -21,6 +21,49 @@ import { useEffect, useState } from 'react';
 
 const config = require('../../../config');
 
+const monthP = [
+    {
+        value: '',
+        label: ''
+    },{
+        value: "P1",
+        label: 'P1'
+    }, {
+        value: "P2",
+        label: 'P2'
+    },{
+        value: "P3",
+        label: 'P3'
+    },{
+        value: "P4",
+        label: 'P4'
+    },{
+        value: "P5",
+        label: 'P5'
+    },{
+        value: "P6",
+        label: 'P6'
+    },{
+        value: "P7",
+        label: 'P7'
+    },{
+        value: "P8",
+        label: 'P8'
+    },{
+        value: "P9",
+        label: 'P9'
+    },{
+        value: "P10",
+        label: 'P10'
+    },{
+        value: "P11",
+        label: 'P11'
+    },{
+        value: "P12",
+        label: 'P12'
+    },
+];
+
 const EntryForm = ({data}) => {
 
     const [isLoading, setLoading] = useState(true);
@@ -59,7 +102,7 @@ const EntryForm = ({data}) => {
                 createdBy: entry.createdBy,
                 modifiedBy: modifiedBy,
                 
-                createdDate: entry.createdDateH,
+                createdDate: entry.createdDate,
 
                 op20: entry.op20,
                 op40: entry.op40,
@@ -133,25 +176,6 @@ const EntryForm = ({data}) => {
                                 container
                                 spacing={3}
                             >
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-
-                                <TextField
-                                    fullWidth
-                                    label="ID"
-                                    name="id"
-                                    onChange={handleChange}
-                                    required
-                                    disabled={true}
-                                    value={values.id}
-                                    variant="outlined"
-                                    InputLabelProps={{ shrink: true, required: true }}
-                                />
-
-                                </Grid>
                                 
                                 <Grid
                                     item
@@ -177,18 +201,26 @@ const EntryForm = ({data}) => {
                                     md={6}
                                     xs={12}
                                 >
-
-                                <TextField
-                                    fullWidth
-                                    label="Fiscal Month"
-                                    name="fiscalMonth"
-                                    onChange={handleChange}
-                                    required
-                                    value={values.fiscalMonth}
-                                    variant="outlined"
-                                    InputLabelProps={{ shrink: true, required: true }}
-                                />
-
+                                    <TextField
+                                        fullWidth
+                                        label="Fiscal Month"
+                                        name="fiscalMonth"
+                                        onChange={handleChange}
+                                        required
+                                        select
+                                        SelectProps={{ native: true }}
+                                        value={values.depID}
+                                        variant="outlined"
+                                    >
+                                        {monthP.map((option) => (
+                                            <option
+                                                key={option.value}
+                                                value={option.value}
+                                            >
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </TextField>
                                 </Grid>
 
                                 <Grid
@@ -205,46 +237,6 @@ const EntryForm = ({data}) => {
                                     onChange={handleChange}
                                     required
                                     value={values.reportDate}
-                                    variant="outlined"
-                                    InputLabelProps={{ shrink: true, required: true }}
-                                />
-
-                                </Grid>
-
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-
-                                <TextField
-                                    fullWidth
-                                    label="Created By"
-                                    name="createdBy"
-                                    onChange={handleChange}
-                                    disabled={true}
-                                    required
-                                    value={values.createdBy}
-                                    variant="outlined"
-                                    InputLabelProps={{ shrink: true, required: true }}
-                                />
-
-                                </Grid>
-
-                                <Grid
-                                    item
-                                    md={6}
-                                    xs={12}
-                                >
-
-                                <TextField
-                                    fullWidth
-                                    label="Created Date"
-                                    name="createdDate"
-                                    onChange={handleChange}
-                                    disabled={true}
-                                    required
-                                    value={values.createdDate}
                                     variant="outlined"
                                     InputLabelProps={{ shrink: true, required: true }}
                                 />

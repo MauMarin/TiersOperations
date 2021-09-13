@@ -41,7 +41,6 @@ router.post('/insert', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
-    console.log(req.body)
     const{id, 
         entry,
         fiscalYear,
@@ -67,7 +66,6 @@ router.post('/update', (req, res) => {
             createdBy,
             modifiedBy,
             createdDate,
-            //modifiedDate,
             scrap,
             conversionLoss,
             toolConsumption,

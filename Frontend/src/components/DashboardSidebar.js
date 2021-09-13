@@ -81,7 +81,7 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
         if (openMobile && onMobileClose) {
             onMobileClose();
         }
-    }, [location.pathname, onMobileClose, openMobile]);
+    }, [location.pathname]);
 
     const cookie = new Cookies();
     const { name, RoleName, role } = cookie.get('userData');

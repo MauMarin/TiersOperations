@@ -141,7 +141,7 @@ const EntryForm = (props) => {
 
                 axios({
                     method: 'post',
-                    url: `http://http://${config.host}:${config.port}/api/cards/insert`,
+                    url: `http://${config.host}:${config.port}/api/cards/insert`,
                     headers: { 'Content-Type': 'application/json; charset=utf-8' },
                     data: {
                         status: status,

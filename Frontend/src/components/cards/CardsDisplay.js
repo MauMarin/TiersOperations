@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
 import {
   Box,
@@ -19,11 +19,9 @@ import {withStyles} from '@material-ui/styles';
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
-import axios from 'axios';
-
 import Popup from './Popup'
 
-const config = require('../../config');
+import Cookies from 'universal-cookie';
 
 const StyledDataGrid = withStyles({
   root: {
@@ -41,11 +39,17 @@ const StyledDataGrid = withStyles({
   }
 })(DataGrid);
 
+var state = true;
+
 export default function DataGridDemo({ cards, ...rest }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const [openPopup, setOpenPopup] = useState(false);
   const [row, setRow] = useState('');
+
+  const cookie = new Cookies();
+  const { role } = cookie.get('userData');
+  if(role > 1) state = false;
 
   const columns = [
     { field: 'id', headerName: 'Card ID', width: 150 },
@@ -126,9 +130,14 @@ export default function DataGridDemo({ cards, ...rest }) {
         const handleClick = (event) => {
           setAnchorEl(event.currentTarget);
         };
+
+        const handleClose = (event) => {
+          setAnchorEl(null);
+        }
     
 
         const onClick = () => {
+          setAnchorEl(null);
           setOpenPopup(true)
           setRow(params.row.id);
         };
@@ -143,8 +152,9 @@ export default function DataGridDemo({ cards, ...rest }) {
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
+              onClose={handleClose}
             >
-              <MenuItem onClick={onClick}>Edit Card</MenuItem>
+              <MenuItem disabled={state} onClick={onClick}>Edit Card</MenuItem>
             </Menu>
           </div>
         );
@@ -173,7 +183,10 @@ export default function DataGridDemo({ cards, ...rest }) {
               disableSelectionOnClick
               
               autoPageSize={true}
-              disableExtendRowFullWidth={false}
+              disableExtendRowFullWidth={true}
+              components={{
+                Toolbar: GridToolbar,
+              }}
             />
           </div>
         </Box>

@@ -12,6 +12,7 @@ class ServiceController{
             {replacements: {
                 idEntry: idEntry_
             }});
+        console.log(entry)
         return entry;
     }
 
@@ -64,6 +65,8 @@ class ServiceController{
         intervention_,
         OEE_
     ){
+
+        console.log(createdDate_)
         
         await connection.sequelize.query('EXEC [dbo].[usp_ServiceEntryUpdate] :id, :idEntry, :fiscalYear, :fiscalMonth, :reportDate, :createdBy, :modifiedBy, :createdDate, :op20, :op40, :op60, :op65, :op70, :intervention, :OEE',
         {replacements: {

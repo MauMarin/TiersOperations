@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   Box,
@@ -17,9 +17,24 @@ import Popup from './Popup'
 
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
+import Cookies from 'universal-cookie';
+var state = true;
+
 export default function DataGridDemo({ customers, ...rest }) {
   const [openPopup, setOpenPopup] = useState(false);
   const [row, setRow] = useState('');
+  const [isLoading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const cookie = new Cookies();
+    const { role } = cookie.get('userData');
+    if(role > 1) state = false;
+    setLoading(false);
+  }, []);
+
+  if (isLoading) {
+    return <div className="App">Loading...</div>;
+  }
 
   const columns = [
     { field: 'id', headerName: 'Entry ID', width: 150 },
@@ -101,7 +116,7 @@ export default function DataGridDemo({ customers, ...rest }) {
           setRow(params.row.id);
         };
   
-        return <IconButton onClick={onClick}> <Edit /> </IconButton>;
+        return <IconButton disabled={state} onClick={onClick}> <Edit /> </IconButton>;
       }
     }
   ];
