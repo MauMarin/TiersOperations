@@ -1,3 +1,5 @@
+// Archivo que define mediante variables de ambiente host y puerto del API
+
 const dotenv = require('dotenv');
 
 dotenv.config();

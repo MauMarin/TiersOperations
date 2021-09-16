@@ -10,19 +10,29 @@ const config = require('../config');
 
 export default function CostEntryList(props) {
 
+  // Si es verdadero, se muestra un texto en vez del componente. Se pone mientras se carga la información
   const [isLoading, setLoading] = useState(true);
+
+  // La información de los entries
   const [entries, setEntries] = useState({});
+
+  // Define si se muestra el popup o no
   const [openPopup, setOpenPopup] = useState(false);
 
 
   useEffect(() => {
+
+    // Llamado al API para conseguir todos los goals de opex
     axios.post(`http://${config.host}:${config.port}/api/goals/opex/allGoals`).then(response => {
-        console.log(response.data)
+        // Asigna el valor obtenido de la base de datos a la variable entries
         setEntries(response.data)
       });
+
+    // Cambia el estado de loading para que se muestre el componente
     setLoading(false);
   }, []);
 
+  // Mostrar esto mientras se hace un fetch a la base y muestran los componentes
   if (isLoading) {
     return <div className="App">Loading...</div>;
   }

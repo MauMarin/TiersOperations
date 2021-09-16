@@ -1,6 +1,7 @@
 'use strict';
 
 const express = require('express');
+
 var CardController = require('../controllers/cardController')
 const router = express.Router();
 
@@ -24,7 +25,6 @@ router.post('/select', (req, res) => {
 })
 
 router.post('/insert', (req, res) => {
-    //const {status, dueDate, department, description, submittedBy, directedTo, actionPlan, createdBy, tier} = req.body;
     const {status, dueDate, department, description, submittedBy, directedTo, actionPlan, tier, createdBy} = req.body.status;
     
     try{
@@ -44,6 +44,7 @@ router.post('/insert', (req, res) => {
 router.post('/update', (req, res) => {
     const{id, status, dueDate, department, submittedBy, directedTo, actionPlan, createdBy, modifiedBy, creationDate, description, tier} = req.body.status;
 
+    // Se castea a número para evitar errores
     const dep2 = Number(department)
 
     try{
@@ -76,6 +77,7 @@ router.post('/delete', (req, res) => {
     }
 })
 
+// Dado el ID, cambia el estado de la carta
 router.post('/changeStatus', (req, res) => {
     const {idCard, status} = req.body;
     try{
@@ -92,6 +94,7 @@ router.post('/changeStatus', (req, res) => {
     }
 })
 
+// Retorna todas las cartas que pertenezcan a un estado dado (verde, amarillo, rojo)
 router.post('/getByStatus', (req, res) => {
     const {status} = req.body;
     console.log(status)

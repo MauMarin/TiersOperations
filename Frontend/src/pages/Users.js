@@ -11,14 +11,19 @@ const config = require('../config');
 
 export default function Users(props){
 
+  // Si es verdadero, se muestra un texto en vez del componente. Se pone mientras se carga la información
   const [isLoading, setLoading] = useState(true);
-  const [entries, setEntries] = useState();
+
+  // La información de los entries
+  const [entries, setEntries] = useState({});
+
+  // Define si se muestra el popup o no
   const [openPopup, setOpenPopup] = useState(false);
 
   useEffect(() => {
-    const depID = 1;
-    axios.post(`http://${config.host}:${config.port}/api/users/getAll`, {depID}).then(response => {
-      console.log(response.data)
+
+    // Llamado al API para conseguir la ifnormación de todos los usuarios
+    axios.post(`http://${config.host}:${config.port}/api/users/getAll`).then(response => {
       setEntries(response.data)
       setLoading(false);
     });

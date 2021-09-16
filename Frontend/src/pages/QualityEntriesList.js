@@ -14,18 +14,31 @@ const config = require('../config');
 
 export default function QualityList(props) {
 
+  // Si es verdadero, se muestra un texto en vez del componente. Se pone mientras se carga la información
   const [isLoading, setLoading] = useState(true);
+
+  // La información de los entries
   const [entries, setEntries] = useState({});
+
+  // Define si se muestra el popup o no
   const [openPopup, setOpenPopup] = useState(false);
 
   useEffect(() => {
     axios.post(`http://${config.host}:${config.port}/api/entries/quality/allEntries`).then(response => {
         setEntries(response.data)
       });
-      const cookie = new Cookies();
+
+    // Carga la cookie y saca de ella el rol del usuario. En base a esto define si se deshabilita el botón de "New Card"
+    const cookie = new Cookies();
+
+    // Extra el rol para saber los permisos del mismo
     const { role } = cookie.get('userData');
+
+    // Si el rol es mayor a 1, osea, cualquiera menos guest, habilita el botón
     if(role > 1) state = false;
-    setLoading(false)
+
+    // Cambia el estado de loading para que se muestre el componente
+    setLoading(false);
   }, []);
 
   if (isLoading) {

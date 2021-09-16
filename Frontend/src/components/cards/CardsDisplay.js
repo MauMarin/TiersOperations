@@ -23,6 +23,7 @@ import Popup from './Popup'
 
 import Cookies from 'universal-cookie';
 
+// Se usa para extener el tamaño de la celda
 const StyledDataGrid = withStyles({
   root: {
     "& .MuiDataGrid-renderingZone": {
@@ -42,15 +43,25 @@ const StyledDataGrid = withStyles({
 var state = true;
 
 export default function DataGridDemo({ cards, ...rest }) {
+  // Se utiliza para el menu 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
+  // Define si se muestra el popup o no
   const [openPopup, setOpenPopup] = useState(false);
+
+  // Se utiliza para guardar la información de un row
   const [row, setRow] = useState('');
 
+  // Carga la cookie y saca de ella el rol del usuario. En base a esto define si se deshabilita el botón de "New Card"
   const cookie = new Cookies();
+
+  // Extra el rol para saber los permisos del mismo
   const { role } = cookie.get('userData');
+
+  // Si el rol es mayor a 1, osea, cualquiera menos guest, habilita el botón
   if(role > 1) state = false;
 
+  // Definición de columnas / headers
   const columns = [
     { field: 'id', headerName: 'Card ID', width: 150 },
     {
@@ -119,6 +130,8 @@ export default function DataGridDemo({ cards, ...rest }) {
       sortable: true,
       width: 160
     },
+
+    // Muestra columna de opciones, con la funcionalidad
     {
       field: "",
       headerName: "Options",
@@ -135,7 +148,7 @@ export default function DataGridDemo({ cards, ...rest }) {
           setAnchorEl(null);
         }
     
-
+        // Cuando se presiona la opción, saca toda la información del row
         const onClick = () => {
           setAnchorEl(null);
           setOpenPopup(true)
@@ -169,7 +182,6 @@ export default function DataGridDemo({ cards, ...rest }) {
     
   ];
 
-  //console.log(cards)
   return (
     <Card {...rest}>
       <PerfectScrollbar>

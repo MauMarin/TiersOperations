@@ -8,10 +8,11 @@ class OpExController{
     constructor(){}
 
     async readOpExEntry(idGoal_){
+        console.log(idGoal_)
         const entry = await connection.sequelize.query('EXEC [dbo].[usp_OpExGoalSelect] :idGoal',
-                        {replacements: {
-                            idGoal: idGoal_
-                        }});
+            {replacements: {
+                idGoal: idGoal_
+            }});
         return entry;
     }
 
@@ -50,22 +51,20 @@ class OpExController{
         depID_,
         fiscalYear_,
         fiscalMonth_,
-        monthly_,
         
         evaluation6S_, trainingOnTime_, completedOnTime_){
 
         
-        await connection.sequelize.query('EXEC [dbo].[usp_OpExGoalUpdate] :idGoal, :depID, :fiscalYear, :fiscalMonth, :monthly, :evaluation6S, :trainingOnTime, :completedOnTime',
+        await connection.sequelize.query('EXEC [dbo].[usp_OpExGoalUpdate] :idGoal, :depID, :fiscalYear, :fiscalMonth, :eval6S, :tOT, :cOT',
         {replacements: {
             idGoal: idGoal_,
             depID: depID_,
             fiscalYear: fiscalYear_, 
             fiscalMonth: fiscalMonth_, 
-            monthly: monthly_,
 
-            evaluation6S: evaluation6S_,
-            trainingOnTime: trainingOnTime_,
-            completedOnTime: completedOnTime_
+            eval6S: evaluation6S_,
+            tOT: trainingOnTime_,
+            cOT: completedOnTime_
         }});
 
     };

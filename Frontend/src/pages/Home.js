@@ -21,9 +21,9 @@ const Home = () => {
       >
         <Card>
         <CardHeader
-          title="Medtronic internal organization"
+          title="Migo"
         />
-          <img src={'/static/images/home2.jpeg'} alt="Operations diagram" />
+          <img src={'/static/images/home3.jpg'} alt="Operations diagram" />
         </Card>
       </Box>
     </>

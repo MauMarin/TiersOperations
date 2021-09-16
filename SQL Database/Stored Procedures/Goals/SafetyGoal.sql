@@ -15,8 +15,8 @@ AS
 	BEGIN TRAN
 
 	select c.*, e.* from Entry e
-	inner join SafetyGoal c on c.goalID = c.id
-	where e.id = @idGoal
+	inner join SafetyGoal c on c.goalID = e.id
+	where c.id = @idGoal
 
 	COMMIT
 GO

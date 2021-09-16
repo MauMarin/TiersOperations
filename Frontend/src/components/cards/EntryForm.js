@@ -21,6 +21,7 @@ import axios from 'axios';
 
 const config = require('../../config');
 
+// Selección única de los valores 
 const status = [
     {
         value: '',
@@ -37,6 +38,7 @@ const status = [
     }
 ];
 
+// Selección única de departamentos
 const departments = [
     {
         value: '',
@@ -58,15 +60,16 @@ const departments = [
         label: 'Service'
     },
     {
-        value: 1002,
+        value: 6,
         label: 'MFG'
     },
     {
-        value: 1003,
+        value: 7,
         label: 'ENG'
     }
 ];
 
+// Selección única de los tiers
 const tiers = [
     {
         value: '',
@@ -80,6 +83,7 @@ const tiers = [
     },
 ]
 
+// Array con objeto vacío que se va a ir llenando con la información del API
 const userOptions = [
     {
         value: '',

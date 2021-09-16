@@ -47,6 +47,7 @@ AS
                
 	COMMIT
 GO
+
 IF OBJECT_ID('[dbo].[usp_GoalsUpdate]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_GoalsUpdate] 
@@ -56,8 +57,7 @@ CREATE PROC [dbo].[usp_GoalsUpdate]
     @id int,
     @depID int,
     @fiscalYear varchar(10),
-    @fiscalMonth varchar(10),
-    @monthly bit
+    @fiscalMonth varchar(10)
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -65,17 +65,18 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[Goals]
-	SET    [depID] = @depID, [fiscalYear] = @fiscalYear, [fiscalMonth] = @fiscalMonth, [monthly] = @monthly
+	SET    [depID] = @depID, [fiscalYear] = @fiscalYear, [fiscalMonth] = @fiscalMonth
 	WHERE  [id] = @id
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [depID], [fiscalYear], [fiscalMonth], [monthly]
+	SELECT [id], [depID], [fiscalYear], [fiscalMonth]
 	FROM   [dbo].[Goals]
 	WHERE  [id] = @id	
 	-- End Return Select <- do not remove
 
 	COMMIT
 GO
+
 IF OBJECT_ID('[dbo].[usp_GoalsDelete]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_GoalsDelete] 
@@ -115,8 +116,8 @@ AS
 	BEGIN TRAN
 
 	select c.*, e.* from Entry e
-	inner join CostGoals c on c.goalID = c.id
-	where e.id = @idGoal
+	inner join CostGoals c on c.goalID = e.id
+	where c.id = @idGoal
 
 	COMMIT
 GO
@@ -173,7 +174,6 @@ CREATE PROC [dbo].[usp_CostGoalsUpdate]
     @depID int,
     @fiscalYear varchar(10),
     @fiscalMonth varchar(10),
-    @monthly bit,
 
 	--> Cost variables
     @scrap float,
@@ -192,7 +192,7 @@ AS
 	SET    [scrap] = @scrap, [conversionLoss] = @conversionLoss, [toolConsumption] = @toolConsumption, [toolRate] = @toolRate, [earnHours] = @earnHours, [energyRate] = @energyRate, [goalID] = @idGoal
 	WHERE  [goalID] = @idGoal
 
-	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth, @monthly
+	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth
 	
 	-- Begin Return Select <- do not remove
 	SELECT [id], [scrap], [conversionLoss], [toolConsumption], [toolRate], [earnHours], [energyRate], [goalID]
@@ -265,9 +265,9 @@ AS
 
 	BEGIN TRAN
 
-	select c.*, e.* from Entry e
-	inner join OpExGoal c on c.goalID = c.id
-	where e.id = @idGoal
+	select c.*, e.*, d.id from Entry e
+	inner join OpExGoal c on c.goalID = e.id
+	where c.id = @idGoal
 
 	COMMIT
 GO
@@ -321,7 +321,6 @@ CREATE PROC [dbo].[usp_OpExGoalUpdate]
 	@depID int,
     @fiscalYear varchar(10),
     @fiscalMonth varchar(10),
-    @monthly bit,
 
 	--> OpEx variables
 	@eval6S int,
@@ -337,7 +336,7 @@ AS
 	SET    [eval6S] = @eval6S, [tOT] = @tOT, [cOT] = @cOT, [goalID] = @idGoal
 	WHERE  [goalID] = @idGoal
 
-	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth, @monthly
+	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth
 	
 	-- Begin Return Select <- do not remove
 	SELECT [id], [eval6S], [tOT], [cOT], [goalID]
@@ -396,12 +395,12 @@ GO
 USE [TiersOperations];
 GO
 
-IF OBJECT_ID('[dbo].[usp_ServiceGoalSelect]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_QualityGoalSelect]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_ServiceGoalSelect] 
+    DROP PROC [dbo].[usp_QualityGoalSelect] 
 END 
 GO
-CREATE PROC [dbo].[usp_ServiceGoalSelect] 
+CREATE PROC [dbo].[usp_QualityGoalSelect] 
     @idGoal int
 AS 
 	SET NOCOUNT ON 
@@ -410,33 +409,31 @@ AS
 	BEGIN TRAN
 
 	select c.*, e.* from Entry e
-	inner join ServiceGoal c on c.goalID = c.id
-	where e.id = @idGoal 
+	inner join QualityGoal c on c.goalID = e.id
+	where c.id = @idGoal
 
 	COMMIT
 GO
 
 
-IF OBJECT_ID('[dbo].[usp_ServiceGoalInsert]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_QualityGoalInsert]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_ServiceGoalInsert] 
+    DROP PROC [dbo].[usp_QualityGoalInsert] 
 END 
 GO
-CREATE PROC [dbo].[usp_ServiceGoalInsert] 
+CREATE PROC [dbo].[usp_QualityGoalInsert] 
     --> Goal variables
 	@depID int,
     @fiscalYear varchar(10),
     @fiscalMonth varchar(10),
     @monthly bit,
 
-	--> Service variables
-	@op20 int,
-    @op40 int,
-    @op60 int,
-    @op65 int,
-    @op70 int,
-    @intervention int,
-    @OEE float
+	--> Quality variables
+	@larOverall float,
+    @larHumacao float,
+    @larWarsaw float,
+    @fly65 float,
+    @NCROpen int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -445,12 +442,12 @@ AS
 
 	exec usp_GoalsInsert @depID, @fiscalYear, @fiscalMonth, @monthly
 	
-	INSERT INTO [dbo].[ServiceGoal] ([op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [goalID])
-	SELECT @op20, @op40, @op60, @op65, @op70, @intervention, @OEE, @@IDENTITY
+	INSERT INTO [dbo].[QualityGoal] ([larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [goalID])
+	SELECT @larOverall, @larHumacao, @larWarsaw, @fly65, @NCROpen, @@IDENTITY
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [goalID]
-	FROM   [dbo].[ServiceGoal]
+	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [goalID]
+	FROM   [dbo].[QualityGoal]
 	WHERE  [id] = SCOPE_IDENTITY()
 	-- End Return Select <- do not remove
                
@@ -458,55 +455,53 @@ AS
 GO
 
 
-IF OBJECT_ID('[dbo].[usp_ServiceGoalUpdate]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_QualityGoalUpdate]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_ServiceGoalUpdate] 
+    DROP PROC [dbo].[usp_QualityGoalUpdate] 
 END 
 GO
-CREATE PROC [dbo].[usp_ServiceGoalUpdate] 
-    --> Goal variables
+CREATE PROC [dbo].[usp_QualityGoalUpdate] 
+	--> Goal variables
 	@idGoal int,
-    @depID int,
+	@depID int,
     @fiscalYear varchar(10),
     @fiscalMonth varchar(10),
     @monthly bit,
 
-	--> Service variables
-    @op20 int,
-    @op40 int,
-    @op60 int,
-    @op65 int,
-    @op70 int,
-    @intervention int,
-    @OEE float
+	--> Quality variables
+    @larOverall float,
+    @larHumacao float,
+    @larWarsaw float,
+    @fly65 float,
+    @NCROpen int
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 	
 	BEGIN TRAN
 
-	UPDATE [dbo].[ServiceGoal]
-	SET    [op20] = @op20, [op40] = @op40, [op60] = @op60, [op65] = @op65, [op70] = @op70, [intervention] = @intervention, [OEE] = @OEE, [goalID] = @idGoal
+	UPDATE [dbo].[QualityGoal]
+	SET    [larOverall] = @larOverall, [larHumacao] = @larHumacao, [larWarsaw] = @larWarsaw, [fly65] = @fly65, [NCROpen] = @NCROpen, [goalID] = @idGoal
 	WHERE  [goalID] = @idGoal
 
 	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth, @monthly
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [goalID]
-	FROM   [dbo].[ServiceGoal]
-	WHERE  [id] = @@IDENTITY	
+	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [goalID]
+	FROM   [dbo].[QualityGoal]
+	WHERE  [id] = @@IDENTITY
 	-- End Return Select <- do not remove
 
 	COMMIT
 GO
 
 
-IF OBJECT_ID('[dbo].[usp_ServiceGoalDelete]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_QualityGoalDelete]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_ServiceGoalDelete] 
+    DROP PROC [dbo].[usp_QualityGoalDelete] 
 END 
 GO
-CREATE PROC [dbo].[usp_ServiceGoalDelete] 
+CREATE PROC [dbo].[usp_QualityGoalDelete] 
     @idGoal int
 AS 
 	SET NOCOUNT ON 
@@ -515,7 +510,7 @@ AS
 	BEGIN TRAN
 
 	DELETE
-	FROM   [dbo].[ServiceGoal]
+	FROM   [dbo].[QualityGoal]
 	WHERE  [goalID] = @idGoal
 
 	exec usp_GoalsDelete @idGoal
@@ -523,12 +518,13 @@ AS
 	COMMIT
 GO
 
-IF OBJECT_ID('[dbo].[usp_GoalsByService]') IS NOT NULL
+
+IF OBJECT_ID('[dbo].[usp_GoalsByQuality]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_GoalsByService] 
+    DROP PROC [dbo].[usp_GoalsByQuality] 
 END 
 GO
-CREATE PROC [dbo].[usp_GoalsByService]
+CREATE PROC [dbo].[usp_GoalsByQuality]
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -536,7 +532,7 @@ AS
 	BEGIN TRAN
 
 	select g.*, d.name, c.* from Goals g
-    inner join ServiceGoal c on g.id = c.goalID
+    inner join QualityGoal c on g.id = c.goalID
     inner join Department d on d.id = g.depID
 
 	COMMIT
@@ -561,8 +557,8 @@ AS
 	BEGIN TRAN
 
 	select c.*, e.* from Entry e
-	inner join SafetyGoal c on c.goalID = c.id
-	where e.id = @idGoal
+	inner join SafetyGoal c on c.goalID = e.id
+	where c.id = @idGoal
 
 	COMMIT
 GO
@@ -693,12 +689,12 @@ GO
 USE [TiersOperations];
 GO
 
-IF OBJECT_ID('[dbo].[usp_QualityGoalSelect]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_ServiceGoalSelect]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_QualityGoalSelect] 
+    DROP PROC [dbo].[usp_ServiceGoalSelect] 
 END 
 GO
-CREATE PROC [dbo].[usp_QualityGoalSelect] 
+CREATE PROC [dbo].[usp_ServiceGoalSelect] 
     @idGoal int
 AS 
 	SET NOCOUNT ON 
@@ -707,31 +703,33 @@ AS
 	BEGIN TRAN
 
 	select c.*, e.* from Entry e
-	inner join QualityGoal c on c.goalID = c.id
-	where e.id = @idGoal
+	inner join ServiceGoal c on c.goalID = e.id
+	where c.id = @idGoal 
 
 	COMMIT
 GO
 
 
-IF OBJECT_ID('[dbo].[usp_QualityGoalInsert]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_ServiceGoalInsert]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_QualityGoalInsert] 
+    DROP PROC [dbo].[usp_ServiceGoalInsert] 
 END 
 GO
-CREATE PROC [dbo].[usp_QualityGoalInsert] 
+CREATE PROC [dbo].[usp_ServiceGoalInsert] 
     --> Goal variables
 	@depID int,
     @fiscalYear varchar(10),
     @fiscalMonth varchar(10),
     @monthly bit,
 
-	--> Quality variables
-	@larOverall float,
-    @larHumacao float,
-    @larWarsaw float,
-    @fly65 float,
-    @NCROpen int
+	--> Service variables
+	@op20 int,
+    @op40 int,
+    @op60 int,
+    @op65 int,
+    @op70 int,
+    @intervention int,
+    @OEE float
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -740,12 +738,12 @@ AS
 
 	exec usp_GoalsInsert @depID, @fiscalYear, @fiscalMonth, @monthly
 	
-	INSERT INTO [dbo].[QualityGoal] ([larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [goalID])
-	SELECT @larOverall, @larHumacao, @larWarsaw, @fly65, @NCROpen, @@IDENTITY
+	INSERT INTO [dbo].[ServiceGoal] ([op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [goalID])
+	SELECT @op20, @op40, @op60, @op65, @op70, @intervention, @OEE, @@IDENTITY
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [goalID]
-	FROM   [dbo].[QualityGoal]
+	SELECT [id], [op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [goalID]
+	FROM   [dbo].[ServiceGoal]
 	WHERE  [id] = SCOPE_IDENTITY()
 	-- End Return Select <- do not remove
                
@@ -753,53 +751,55 @@ AS
 GO
 
 
-IF OBJECT_ID('[dbo].[usp_QualityGoalUpdate]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_ServiceGoalUpdate]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_QualityGoalUpdate] 
+    DROP PROC [dbo].[usp_ServiceGoalUpdate] 
 END 
 GO
-CREATE PROC [dbo].[usp_QualityGoalUpdate] 
-	--> Goal variables
+CREATE PROC [dbo].[usp_ServiceGoalUpdate] 
+    --> Goal variables
 	@idGoal int,
-	@depID int,
+    @depID int,
     @fiscalYear varchar(10),
     @fiscalMonth varchar(10),
     @monthly bit,
 
-	--> Quality variables
-    @larOverall float,
-    @larHumacao float,
-    @larWarsaw float,
-    @fly65 float,
-    @NCROpen int
+	--> Service variables
+    @op20 int,
+    @op40 int,
+    @op60 int,
+    @op65 int,
+    @op70 int,
+    @intervention int,
+    @OEE float
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
 	
 	BEGIN TRAN
 
-	UPDATE [dbo].[QualityGoal]
-	SET    [larOverall] = @larOverall, [larHumacao] = @larHumacao, [larWarsaw] = @larWarsaw, [fly65] = @fly65, [NCROpen] = @NCROpen, [goalID] = @idGoal
+	UPDATE [dbo].[ServiceGoal]
+	SET    [op20] = @op20, [op40] = @op40, [op60] = @op60, [op65] = @op65, [op70] = @op70, [intervention] = @intervention, [OEE] = @OEE, [goalID] = @idGoal
 	WHERE  [goalID] = @idGoal
 
 	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth, @monthly
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [larOverall], [larHumacao], [larWarsaw], [fly65], [NCROpen], [goalID]
-	FROM   [dbo].[QualityGoal]
-	WHERE  [id] = @@IDENTITY
+	SELECT [id], [op20], [op40], [op60], [op65], [op70], [intervention], [OEE], [goalID]
+	FROM   [dbo].[ServiceGoal]
+	WHERE  [id] = @@IDENTITY	
 	-- End Return Select <- do not remove
 
 	COMMIT
 GO
 
 
-IF OBJECT_ID('[dbo].[usp_QualityGoalDelete]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_ServiceGoalDelete]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_QualityGoalDelete] 
+    DROP PROC [dbo].[usp_ServiceGoalDelete] 
 END 
 GO
-CREATE PROC [dbo].[usp_QualityGoalDelete] 
+CREATE PROC [dbo].[usp_ServiceGoalDelete] 
     @idGoal int
 AS 
 	SET NOCOUNT ON 
@@ -808,7 +808,7 @@ AS
 	BEGIN TRAN
 
 	DELETE
-	FROM   [dbo].[QualityGoal]
+	FROM   [dbo].[ServiceGoal]
 	WHERE  [goalID] = @idGoal
 
 	exec usp_GoalsDelete @idGoal
@@ -816,13 +816,12 @@ AS
 	COMMIT
 GO
 
-
-IF OBJECT_ID('[dbo].[usp_GoalsByQuality]') IS NOT NULL
+IF OBJECT_ID('[dbo].[usp_GoalsByService]') IS NOT NULL
 BEGIN 
-    DROP PROC [dbo].[usp_GoalsByQuality] 
+    DROP PROC [dbo].[usp_GoalsByService] 
 END 
 GO
-CREATE PROC [dbo].[usp_GoalsByQuality]
+CREATE PROC [dbo].[usp_GoalsByService]
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -830,7 +829,7 @@ AS
 	BEGIN TRAN
 
 	select g.*, d.name, c.* from Goals g
-    inner join QualityGoal c on g.id = c.goalID
+    inner join ServiceGoal c on g.id = c.goalID
     inner join Department d on d.id = g.depID
 
 	COMMIT

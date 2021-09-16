@@ -6,7 +6,7 @@ const router = express.Router();
 
 var controller = new QualityController();
 
-router.get('/select', (req, res) => {
+router.post('/select', (req, res) => {
     const {idGoal} = req.body;
     try{
         controller.readQualityGoal(idGoal)

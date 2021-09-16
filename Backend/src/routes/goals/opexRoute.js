@@ -6,13 +6,13 @@ const router = express.Router();
 
 var controller = new OpexController();
 
-router.get('/select', (req, res) => {
-    const {idEntry} = req.body;
+router.post('/select', (req, res) => {
+    const {idGoal} = req.body;
     try{
-        controller.readOpexEntry(idEntry)
+        controller.readOpExEntry(idGoal)
         .then(response => {
             const entry = response;
-            res.json({"OpexEntry":entry[0][0]});
+            res.json({"OpexGoal":entry[0][0]});
         })
     }
     catch(err){
@@ -40,17 +40,16 @@ router.post('/insert', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
+    const {depID} = req.body;
     const{
         idGoal,
-        depID,
         fiscalYear,
         fiscalMonth,
-        monthly,
 
         evaluation6S, 
         trainingOnTime, 
         completedOnTime
-    } = req.body;
+    } = req.body.scrap;
 
     try{
         controller.updateOpExGoal(
@@ -58,7 +57,6 @@ router.post('/update', (req, res) => {
             depID,
             fiscalYear,
             fiscalMonth,
-            monthly,
 
             evaluation6S, trainingOnTime, completedOnTime
         )

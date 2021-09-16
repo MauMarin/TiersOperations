@@ -15,8 +15,8 @@ AS
 	BEGIN TRAN
 
 	select c.*, e.* from Entry e
-	inner join CostGoals c on c.goalID = c.id
-	where e.id = @idGoal
+	inner join CostGoals c on c.goalID = e.id
+	where c.id = @idGoal
 
 	COMMIT
 GO
@@ -73,7 +73,6 @@ CREATE PROC [dbo].[usp_CostGoalsUpdate]
     @depID int,
     @fiscalYear varchar(10),
     @fiscalMonth varchar(10),
-    @monthly bit,
 
 	--> Cost variables
     @scrap float,
@@ -92,7 +91,7 @@ AS
 	SET    [scrap] = @scrap, [conversionLoss] = @conversionLoss, [toolConsumption] = @toolConsumption, [toolRate] = @toolRate, [earnHours] = @earnHours, [energyRate] = @energyRate, [goalID] = @idGoal
 	WHERE  [goalID] = @idGoal
 
-	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth, @monthly
+	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth
 	
 	-- Begin Return Select <- do not remove
 	SELECT [id], [scrap], [conversionLoss], [toolConsumption], [toolRate], [earnHours], [energyRate], [goalID]

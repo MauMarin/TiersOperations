@@ -9,9 +9,9 @@ class CostController{
 
     async readCostEntry(idGoal_){
         const entry = await connection.sequelize.query('EXEC [dbo].[usp_CostGoalsSelect] :idGoal',
-                        {replacements: {
-                            idGoal: idGoal_
-                        }});
+            {replacements: {
+                idGoal: idGoal_
+            }});
         return entry;
     }
 
@@ -63,13 +63,12 @@ class CostController{
         _energyRate){
 
         
-        await connection.sequelize.query('EXEC [dbo].[usp_CostGoalsUpdate] :idGoal, :depID, :fiscalYear, :fiscalMonth, :monthly, :scrap, :conversionLoss, :toolConsumption, :toolRate, :earnHours, :energyRate',
+        const goal = await connection.sequelize.query('EXEC [dbo].[usp_CostGoalsUpdate] :idGoal, :depID, :fiscalYear, :fiscalMonth, :scrap, :conversionLoss, :toolConsumption, :toolRate, :earnHours, :energyRate',
         {replacements: {
             idGoal: idGoal_,
             depID: depID_,
             fiscalYear: _fiscalYear, 
             fiscalMonth: _fiscalMonth, 
-            monthly: monthly_,
             scrap: _scrap, 
             conversionLoss: _conversionLoss, 
             toolConsumption: _toolConsumption, 
@@ -77,6 +76,8 @@ class CostController{
             earnHours: _earnHours, 
             energyRate: _energyRate
         }});
+
+        return goal;
 
     };
 

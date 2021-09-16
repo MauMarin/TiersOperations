@@ -71,6 +71,8 @@ router.post('/delete', (req, res) => {
     }
 })
 
+// Se usa para validar que el usuario exista en la base de datos con las credenciales ingresadas
+// Esta sección es una solución temporal, ya que no posee seguridad alguna
 router.post('/validate', (req, res) => {
     const {username, password} = req.body.username;
     try{

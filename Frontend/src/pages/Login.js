@@ -2,6 +2,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+
 import {
   Box,
   Button,
@@ -28,7 +29,10 @@ const config = require('../config');
 
 const Login = () => {
   
+  // Usado para navegar a otra pantalla, ya sea main con sesión o sin sesión
   const navigate = useNavigate();
+
+  // Define si se muestra el popup o no
   const [open, setOpen] = useState(false);
 
   const handleClick = () => {
@@ -72,15 +76,19 @@ const Login = () => {
 
             //initial call to backend
             onSubmit={(username, password) => {
+
+              // Envía username y password, y valida que pertenezcan al mismo usuario, y terona la información pertinente a ese usuario
               axios.post(`http://${config.host}:${config.port}/api/users/validate`, {username, password})
               .then((response) => {
                 const data = response.data;
                 if(data !== ""){
+                  // Crea el cookie con la info de la base de datos
                   cookie.set('userData', data, {path: '/'})
+
+                  // Navega a home page mediante la ruta nada más
                   navigate('/app/home', { replace: true });
                 }
                 else{
-                  console.log("WTF");
                   handleClick()
                 }
               }, (error) => {
@@ -131,7 +139,7 @@ const Login = () => {
                   error={Boolean(touched.username && errors.username)}
                   fullWidth
                   helperText={touched.username && errors.username}
-                  label="Username Address"
+                  label="Username"
                   margin="normal"
                   name="username"
                   onBlur={handleBlur}
@@ -174,7 +182,9 @@ const Login = () => {
                     component={RouterLink}
                     to="/app/home"
                     variant="h6"
-                    onClick={ cookie.set('userData',
+                    onClick={ 
+                      // Crea un usuario default sin permisos
+                      cookie.set('userData',
                       {
                         name: "Guest user",
                         username: "GU",

@@ -14,7 +14,6 @@ import Logo from './Logo';
 import Cookies from 'universal-cookie';
 
 const DashboardNavbar = ({ onMobileNavOpen, ...rest }) => {
-  //const [notifications] = useState([]);
 
   const cookie = new Cookies();
 

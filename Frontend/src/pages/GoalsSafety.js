@@ -10,16 +10,23 @@ const config = require('../config');
 
 export default function CostEntryList(props) {
 
+  // Si es verdadero, se muestra un texto en vez del componente. Se pone mientras se carga la información
   const [isLoading, setLoading] = useState(true);
+
+  // La información de los entries
   const [entries, setEntries] = useState({});
+
+  // Define si se muestra el popup o no
   const [openPopup, setOpenPopup] = useState(false);
 
-
   useEffect(() => {
+
+    // Llamado al API para conseguir todas los goals de safety
     axios.post(`http://${config.host}:${config.port}/api/goals/safety/allGoals`).then(response => {
-        console.log(response.data)
         setEntries(response.data)
       });
+
+    // Cambia el estado de loading para que se muestre el componente
     setLoading(false);
   }, []);
 

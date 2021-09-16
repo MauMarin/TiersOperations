@@ -22,10 +22,8 @@ import NavItem from './NavItem';
 
 import Cookies from 'universal-cookie';
 
-// const user = {
-//     avatar: '/static/images/default_icon.jpg'
-// };
-
+// Se definen los íconos y rutas que aparecen en el sidebar
+// Level define el nivel mínimo de permiso/rol
 const getSection = (role) => {
     const items = [
         {
@@ -65,6 +63,7 @@ const getSection = (role) => {
     if(role === 4){
         return items;
     }
+    // Filta los items que corresponden a un permiso dado
     else{
         items.forEach(i => {
             if( i.level <= role ) temp.push(i);
@@ -84,6 +83,8 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
     }, [location.pathname]);
 
     const cookie = new Cookies();
+
+    // Información que se muestra en la parte superior del sidebar
     const { name, RoleName, role } = cookie.get('userData');
 
     const items = getSection(role)

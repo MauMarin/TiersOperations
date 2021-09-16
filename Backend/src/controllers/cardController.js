@@ -1,8 +1,4 @@
 const connection = require('../connect');
-const fiscal = require('../miscellaneous/fiscalConversion');
-const moment = require('moment');
-
-//Preguntar si conexión se puede hacer desde aquí o se requiere de un DAO
 
 class CardController{
     constructor(){}
@@ -34,10 +30,8 @@ class CardController{
     };
 
     async updateCard(idCard_, status_, dueDate_, department_, submittedBy_, directedTo_, actionPlan_, createdBy_, modifiedBy_, creationDate_, description_, tier_){
-
-        console.log(idCard_, status_, dueDate_, department_, submittedBy_, directedTo_, actionPlan_, createdBy_, modifiedBy_, creationDate_, tier_, description_,)
         
-        await connection.sequelize.query('EXEC [dbo].[usp_CardsUpdate] :idCard, :status, :dueDate, :department, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :creationDate, :tier, description',
+        await connection.sequelize.query('EXEC [dbo].[usp_CardsUpdate] :idCard, :status, :dueDate, :department, :submittedBy, :directedTo, :actionPlan, :createdBy, :modifiedBy, :creationDate, :tier, :description',
         {replacements: {
             idCard: idCard_,
             status: status_,

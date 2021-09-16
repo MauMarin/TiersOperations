@@ -47,6 +47,7 @@ AS
                
 	COMMIT
 GO
+
 IF OBJECT_ID('[dbo].[usp_GoalsUpdate]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_GoalsUpdate] 
@@ -56,8 +57,7 @@ CREATE PROC [dbo].[usp_GoalsUpdate]
     @id int,
     @depID int,
     @fiscalYear varchar(10),
-    @fiscalMonth varchar(10),
-    @monthly bit
+    @fiscalMonth varchar(10)
 AS 
 	SET NOCOUNT ON 
 	SET XACT_ABORT ON  
@@ -65,17 +65,18 @@ AS
 	BEGIN TRAN
 
 	UPDATE [dbo].[Goals]
-	SET    [depID] = @depID, [fiscalYear] = @fiscalYear, [fiscalMonth] = @fiscalMonth, [monthly] = @monthly
+	SET    [depID] = @depID, [fiscalYear] = @fiscalYear, [fiscalMonth] = @fiscalMonth
 	WHERE  [id] = @id
 	
 	-- Begin Return Select <- do not remove
-	SELECT [id], [depID], [fiscalYear], [fiscalMonth], [monthly]
+	SELECT [id], [depID], [fiscalYear], [fiscalMonth]
 	FROM   [dbo].[Goals]
 	WHERE  [id] = @id	
 	-- End Return Select <- do not remove
 
 	COMMIT
 GO
+
 IF OBJECT_ID('[dbo].[usp_GoalsDelete]') IS NOT NULL
 BEGIN 
     DROP PROC [dbo].[usp_GoalsDelete] 

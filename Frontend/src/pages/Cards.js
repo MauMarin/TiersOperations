@@ -30,23 +30,32 @@ var state = true;
 
 export default function CostEntryList(props) {
 
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
+  // Variables utilizadas para componentes
+  
+  // El valor del checkbox
   const [value, setValue] = useState('');
+
+  // Texto que aparece cuando no se selecciona nada
   const [helperText, setHelperText] = useState('');
 
+  // Si es verdadero, se muestra un texto en vez del componente. Se pone mientras se carga la información
   const [isLoading, setLoading] = useState(true);
+
+  // La información de las cartas
   const [entries, setEntries] = useState({});
+
+  // Color que entra por parámetro para hacer la búsqueda dentro de la DB
   const [color, setColor] = useState();
 
+  // Define si se muestra el popup o no
   const [openPopup, setOpenPopup] = useState(false);
 
+  // Se llama cuando hay un cambio en los checkbox
   const handleRadioChange = (event) => {
     setValue(event.target.value);
   };
 
+  // Llama a la base de datos y retorna los valores de las cartas dado el color
   const handleSubmit = (event) => {
     event.preventDefault();
     if (value === 'green' || value === 'yellow' || value === 'red') {
@@ -59,13 +68,22 @@ export default function CostEntryList(props) {
     }
   };
 
+  // Carga al inicio de la página
   useEffect(() => {
+    // Carga la cookie y saca de ella el rol del usuario. En base a esto define si se deshabilita el botón de "New Card"
     const cookie = new Cookies();
+
+    // Extra el rol para saber los permisos del mismo
     const { role } = cookie.get('userData');
+
+    // Si el rol es mayor a 1, osea, cualquiera menos guest, habilita el botón
     if(role > 1) state = false;
+
+    // Cambia el estado de loading para que se muestre el componente
     setLoading(false);
   }, []);
 
+  // Mostrar esto mientras se hace un fetch a la base y muestran los componentes
   if (isLoading) {
     return <div className="App">Loading...</div>;
   }

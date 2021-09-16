@@ -14,9 +14,9 @@ AS
 
 	BEGIN TRAN
 
-	select c.*, e.* from Entry e
-	inner join OpExGoal c on c.goalID = c.id
-	where e.id = @idGoal
+	select c.*, e.*, d.id from Entry e
+	inner join OpExGoal c on c.goalID = e.id
+	where c.id = @idGoal
 
 	COMMIT
 GO
@@ -70,7 +70,6 @@ CREATE PROC [dbo].[usp_OpExGoalUpdate]
 	@depID int,
     @fiscalYear varchar(10),
     @fiscalMonth varchar(10),
-    @monthly bit,
 
 	--> OpEx variables
 	@eval6S int,
@@ -86,7 +85,7 @@ AS
 	SET    [eval6S] = @eval6S, [tOT] = @tOT, [cOT] = @cOT, [goalID] = @idGoal
 	WHERE  [goalID] = @idGoal
 
-	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth, @monthly
+	exec usp_GoalsUpdate @idGoal, @depID, @fiscalYear, @fiscalMonth
 	
 	-- Begin Return Select <- do not remove
 	SELECT [id], [eval6S], [tOT], [cOT], [goalID]

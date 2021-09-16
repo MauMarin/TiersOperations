@@ -6,10 +6,10 @@ const router = express.Router();
 
 var controller = new CostController();
 
-router.get('/select', (req, res) => {
-    const {idEntry} = req.body;
+router.post('/select', (req, res) => {
+    const {idGoal} = req.body;
     try{
-        controller.readCostEntry(idEntry)
+        controller.readCostEntry(idGoal)
         .then(response => {
             const entry = response;
             res.json({"CostEntry":entry[0][0]});
@@ -41,9 +41,9 @@ router.post('/insert', (req, res) => {
 });
 
 router.post('/update', (req, res) => {
+
     const{
         idGoal,
-        depID,
         fiscalYear,
         fiscalMonth,
         monthly,
@@ -54,20 +54,9 @@ router.post('/update', (req, res) => {
         toolRate,
         earnHours,
         energyRate
-    } = req.body;
+    } = req.body.scrap;
 
-    console.log(idGoal,
-        depID,
-        fiscalYear,
-        fiscalMonth,
-        monthly,
-
-        scrap,
-        conversionLoss,
-        toolConsumption,
-        toolRate,
-        earnHours,
-        energyRate)
+    const {depID} = req.body
 
     try{
         controller.updateCostEntry(
